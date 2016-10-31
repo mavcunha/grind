@@ -1,0 +1,14 @@
+Check Command Line tools installation:
+
+$ pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
+package-id: com.apple.pkg.CLTools_Executables
+version: 7.3.1.0.1.1461711523
+volume: /
+location: /
+install-time: 1477871635
+groups: com.apple.FindSystemFiles.pkg-group com.apple.DevToolsBoth.pkg-group com.apple.DevToolsNonRelocatableShared.pkg-group
+
+
+Convert epoch to date 
+$ date -r 1477871635
+Sun Oct 30 21:53:55 BRST 2016
