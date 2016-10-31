@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+
+MAIN_COMMAND=$(basename ${0})
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd)"
+PROJECTS_DIR="$(cd ${ROOT_DIR}/.. && pwd)"
+SUBCOMMANDS_DIR=${ROOT_DIR}/${MAIN_COMMAND}.d
+
+function _colored()   { tput -Txterm setaf ${1}; echo -e ${2}; tput -Txterm sgr0; }
+function in_red()     { _colored 1 "${1}"; } # use for failures
+function in_green()   { _colored 2 "${1}"; } # use for successes
+function in_yellow()  { _colored 3 "${1}"; } # use for warnings / attention
+function in_magenta() { _colored 5 "${1}"; } # use for debug messages
+function in_cyan()    { _colored 6 "${1}"; } # use for main actions / progress
+
+function log() {
+  if [[ -n ${DEBUG} ]]; then
+    tput -Txterm setaf 5 >&2
+    echo -e "debug: ${*}" >&2
+    tput -Txterm sgr0 >&2
+  fi
+}
+
+# warn users of outdated bash versions
+if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
+  in_yellow "WARNING: bash version is '${BASH_VERSION}'"
+  in_yellow "WARNING: which is less than version 4."
+  in_yellow "WARNING: Not all scripts and commands will work properly."
+  in_yellow "WARNING: Consider installing a more recent version of bash."
+else
+  # DEBUG flag is defined as soon as possible
+  DEBUG=$(eval "[[ -n \${${MAIN_COMMAND^^}_DEBUG} ]] && echo 'true' ")
+fi
+
+# add itself to PATH if needed
+log "check if ${MAIN_COMMAND} is on PATH"
+type -a ${MAIN_COMMAND} &> /dev/null
+if [[ $? != 0 ]]; then
+  in_yellow "${MAIN_COMMAND} CLI is not on your PATH, it will be easier to use if it was."
+  export PATH=${PATH}:${ROOT_DIR}
+fi
+
+# environment settings that depend on a project
+[[ -f ${SUBCOMMANDS_DIR}/_environment ]] && . ${SUBCOMMANDS_DIR}/_environment
+
+function _list_commands()
+{
+  echo
+  echo "Subcommands available ('${MAIN_COMMAND} SUBCOMMAND help' for usage):"
+  echo
+  for i in $(export LC_COLLATE=C; find ${SUBCOMMANDS_DIR} -maxdepth 1 -type f -or -type l | grep -vE '/_[^[:blank:]]+$' | sort); do
+    echo -e "  $(basename ${i}):\t\t$(source "${i}"; echo ${SUBCOMMAND_DESC})"
+  done
+  echo
+  exit 1
+}
+
+function _list_libraries()
+{
+  echo
+  echo "Libraries available ('${MAIN_COMMAND} LIBRARY' for more information):"
+  echo
+  for i in $(export LC_COLLATE=C; ls ${SUBCOMMANDS_DIR}/* | grep -E '/_[^[:blank:]]+$' | sort); do
+    echo -e "  $(basename ${i}):\t\t$(source "${i}"; echo ${SUBCOMMAND_DESC})"
+  done
+  echo
+  exit 1
+}
+
+function _subcommand_help() {
+    local subcmd=${1}
+    local subhelp=${2}
+    echo
+    echo "Showing '${MAIN_COMMAND} ${subcmd}' available actions"
+    echo
+    echo "${subhelp}"
+    echo
+    exit 1
+}
+
+function _help() {
+  _subcommand_help ${SUBCOMMAND} "${SUBCOMMAND_HELP}"
+}
+
+function _handle_subcommand() {
+  local SUBCOMMAND=${1}; shift 1
+  local ACTION="${@}"
+
+  log "running ${SUBCOMMANDS_DIR}/${SUBCOMMAND} ${ACTION} "
+  . "${SUBCOMMANDS_DIR}/${SUBCOMMAND}" ${ACTION}
+
+  if [[ "${ACTION}" == "help" || -z "${ACTION}" ]]; then
+    log "showing '${SUBCOMMAND}' help"
+    _help
+  fi
+}
+
+function error() {
+  in_red "ERROR: ${1}"
+  exit 1
+}
+
+function use() {
+  . ${SUBCOMMANDS_DIR}/_${1}
+}
+
+function random_hex() {
+  local chars=${1:-32}
+  echo $(cat /dev/urandom | env LC_CTYPE=C tr -cd 'a-f0-9' | head -c ${chars})
+}
+
+function check_process()
+{
+  log "check_process with '${1}'"
+  echo "pgrep -fl \"${1}\" | grep -qv pgrep && (tput -Txterm setaf 2; echo -e 'OK';)  || (tput -Txterm setaf 1; echo \"**NOK**\")"
+}
+
+function stop_process() {
+  local appname="${*}"
+  local pid=$(pgrep -f "${appname}")
+  log "stop process:${appname} (${pid})"
+  pkill -f "${appname}" &> /dev/null
+  [[ -z ${pid} ]] && return
+  while kill -0 "${pid}" &> /dev/null; do
+    log "waiting process:${appname} (${pid}) stop"
+    sleep 1; ((limit++))
+    [[ ${limit} -gt 10 ]] && in_red "Timeout stopping (${appname})" && break
+  done
+}
+
+_arg_subcmd=${1}
+log "got argument '${_arg_subcmd}'"
+case ${_arg_subcmd} in
+  -l)
+    log 'showing available libs'
+    _list_libraries
+  ;;
+  help|-h|-?|--help|'')
+    log 'help or no argument was given'
+    _list_commands
+  ;;
+  *)
+    log "arguments '${*}'"
+    log "checking if '${SUBCOMMANDS_DIR}/${_arg_subcmd}' exists"
+    [[ ! -f "${SUBCOMMANDS_DIR}/${_arg_subcmd}" ]] && in_red "'${_arg_subcmd}' not found" && _list_commands
+    shift 1
+    _handle_subcommand ${_arg_subcmd} "${@}"
+    ;;
+esac
+
