@@ -1,0 +1,11 @@
+# vim: ft=sh
+
+function install_homebrew() {
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+}
+
+do_run "xcode-select --install"
+  unless "pkgutil --pkg-info=com.apple.pkg.CLTools_Executables > /dev/null "
+
+do_run "install_homebrew"
+  unless "[[ -d /usr/local/Homebrew ]]"

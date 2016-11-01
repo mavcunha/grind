@@ -1,9 +1,22 @@
 # vim: ft=sh
+use "core"
+
 SUBCOMMAND_DESC="Bootstrap machine"
 SUBCOMMAND_HELP=$(cat <<EOH
-Usage ${MAIN_COMMAND} ${SUBCOMMAND} 
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
-do	    Do something
+This command should be run before the first setup using grind, it will
+configure and install things that are one time only. After that use 'grind update'
+
+run               Will install:
+                  * XCode CLI tools
+                  * Homebrew
 
 EOH
 )
+
+case ${1} in
+  run)
+    . ${GRIND_DEF_DIR}/bootstrap
+  ;;
+esac

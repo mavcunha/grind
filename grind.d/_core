@@ -1,0 +1,88 @@
+# vim: ft=sh
+
+declare -gA __GRIND_EXECS
+declare -g  __GRIND_CMD_EXIT_CODE
+declare -g  __GRIND_CMD_NEXT
+
+function __strip_spaces() {
+  echo ${1// /}
+}
+
+# should call a command only once
+# two commands are the same if their command line
+# match with spaces striped
+#
+function __iexec() {
+  local k=$(__strip_spaces "${1}")
+  log "__iexec: ${1}"
+  [[ -n ${__GRIND_EXECS[${k}]} ]] && warn "already defined: ${1}" && return
+  log "mark: ${1} as ran"
+  __GRIND_EXECS[${k}]=${1}
+  log "call: ${1}"
+  eval "${1}"
+}
+
+function __capture_exit_code() {
+  __GRIND_CMD_EXIT_CODE=$?
+}
+
+function __last_exit_code() {
+  log "__last_exit_code: ${__GRIND_CMD_EXIT_CODE}"
+  echo ${__GRIND_CMD_EXIT_CODE}
+}
+
+function __box() {
+  echo "$(in_cyan '[')$(echo "${1}" )$(in_cyan ']')"
+}
+
+function __yellow_box() {
+  __box "$(in_yellow "${1}")"
+}
+function __green_box() {
+  __box "$(in_green "${1}")"
+}
+function __red_box() {
+  __box "$(in_red "${1}")"
+}
+
+function __conditional_run() {
+  local cmd="${1}"
+  local reg="${2}"
+  log "__conditional_run: ${cmd} re: ${reg}"
+  __iexec "${cmd}"
+  __capture_exit_code
+  if [[ $(__last_exit_code) =~ ${reg} ]]; then
+    __yellow_box 'RUN'
+    __iexec "${__GRIND_CMD_NEXT}"
+    __capture_exit_code
+  else
+    __green_box 'SKIP'
+  fi
+}
+
+# should run a command
+function do_run() {
+  log "do_run: ${1}"
+  in_cyan "do_run: ${1}\n"
+  __GRIND_CMD_NEXT="${1}"
+}
+
+function run() {
+  log "run: ${1}"
+  in_cyan "run: ${1}"
+  __yellow_box "RUN" 
+  __iexec "${1}"
+  __capture_exit_code
+}
+
+function unless() {
+  log "unless: ${1}"
+  in_cyan "\tunless: ${1}\n"
+  __conditional_run "${1}"  "^[^0]$"
+}
+
+function if_() {
+  log "if_: ${1}\n"
+  in_cyan "\tif_: ${1}\n"
+  __conditional_run "${1}"  "^0$"
+}

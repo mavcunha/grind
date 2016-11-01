@@ -5,7 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd)"
 PROJECTS_DIR="$(cd ${ROOT_DIR}/.. && pwd)"
 SUBCOMMANDS_DIR=${ROOT_DIR}/${MAIN_COMMAND}.d
 
-function _colored()   { tput -Txterm setaf ${1}; echo -e ${2}; tput -Txterm sgr0; }
+function _colored()   { tput -Txterm setaf ${1}; echo -ne ${2}; tput -Txterm sgr0; }
 function in_red()     { _colored 1 "${1}"; } # use for failures
 function in_green()   { _colored 2 "${1}"; } # use for successes
 function in_yellow()  { _colored 3 "${1}"; } # use for warnings / attention
@@ -97,6 +97,10 @@ function _handle_subcommand() {
 function error() {
   in_red "ERROR: ${1}"
   exit 1
+}
+
+function warn() {
+  in_yellow "WARN: ${1}"
 }
 
 function use() {

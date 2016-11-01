@@ -19,3 +19,6 @@ function open_file() {
   [[ -n ${file} ]] || return
   __osx && open ${file} || xdg-open ${file}
 }
+
+# high level state definitions
+GRIND_DEF_DIR="${ROOT_DIR}/definitions"
