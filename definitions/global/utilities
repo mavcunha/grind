@@ -1,0 +1,9 @@
+
+do_run "brew install httpie"
+  unless_file "/usr/local/bin/http"
+
+do_run "brew install jq"
+  unless_file "/usr/local/bin/jq"
+
+do_run "brew install leiningen"
+  unless_file "/usr/local/bin/lein"

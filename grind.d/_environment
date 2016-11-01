@@ -22,3 +22,5 @@ function open_file() {
 
 # high level state definitions
 GRIND_DEF_DIR="${ROOT_DIR}/definitions"
+
+GRIND_MACHINE_NAME="$(hostname -s)"

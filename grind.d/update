@@ -1,1 +1,29 @@
+# vim: ft=sh
+use "core"
 
+SUBCOMMAND_DESC="Bootstrap machine"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+
+run               Update machine with latest definitions
+
+EOH
+)
+
+
+function _load_recursively() {
+  local dir="${1}"
+  log "_load_recursively: ${dir}"
+  for i in $(export LC_COLLATE=C; find ${dir} -type f -or -type l | sort); do
+    log "loading: ${i}"
+    in_cyan "\n>>>${i##${GRIND_DEF_DIR}}<<<\n";
+    source "${i}";
+  done
+}
+
+case ${1} in
+  run)
+    _load_recursively "${GRIND_DEF_DIR}/global"
+    _load_recursively "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
+  ;;
+esac
