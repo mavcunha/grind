@@ -1,9 +1,13 @@
+# vim: ft=sh
 
 do_run "brew install httpie"
-  unless_file "/usr/local/bin/http"
+  unless_on_path "http"
 
 do_run "brew install jq"
-  unless_file "/usr/local/bin/jq"
+  unless_on_path "jq"
 
 do_run "brew install leiningen"
-  unless_file "/usr/local/bin/lein"
+  unless_on_path "lein"
+
+do_run "brew install git"
+  unless_file "/usr/local/bin/git"

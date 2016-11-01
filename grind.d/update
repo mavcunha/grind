@@ -14,11 +14,13 @@ EOH
 function _load_recursively() {
   local dir="${1}"
   log "_load_recursively: ${dir}"
-  for i in $(export LC_COLLATE=C; find ${dir} -type f -or -type l | sort); do
-    log "loading: ${i}"
-    in_cyan "\n>>>${i##${GRIND_DEF_DIR}}<<<\n";
-    source "${i}";
-  done
+  if [[ -d ${dir} ]]; then
+    for i in $(export LC_COLLATE=C; find ${dir} -type f -or -type l | sort); do
+      log "loading: ${i}"
+      in_cyan "\n>>>${i##${GRIND_DEF_DIR}}<<<\n";
+      source "${i}";
+    done
+  fi
 }
 
 case ${1} in
