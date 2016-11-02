@@ -1,13 +1,29 @@
 # vim: ft=sh
 
+# Bootstrap definitions won't use grind API
+# because they might not work until the bootstrap
+# is finished.
+
+exit 1; # remove this line from defintions/bootstrap to actually enable the bootstrap
+
+set -e
+
 function install_homebrew() {
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 }
 
-run "exit 1; # remove this line from defintions/bootstrap to actually enable the bootstrap"
+function xcode_cli_installed() {
+  pkgutil --pkg-info=com.apple.pkg.CLTools_Executables > /dev/null
+}
 
-do_run "xcode-select --install"
-  unless "pkgutil --pkg-info=com.apple.pkg.CLTools_Executables > /dev/null "
+# Install XCode CLI Tools
+xcode_cli_installed || xcode-select --install
 
-do_run "install_homebrew"
-  unless_dir "/usr/local/Homebrew"
+# Install Homebrew
+xcode_cli_installed && [[ -d "/usr/local/Homebrew" ]] || install_homebrew
+
+# If bash is lower than version 4
+# grind won't work.
+if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
+  brew install bash
+fi

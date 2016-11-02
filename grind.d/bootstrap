@@ -1,6 +1,4 @@
 # vim: ft=sh
-use "core"
-
 SUBCOMMAND_DESC="Bootstrap machine"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
