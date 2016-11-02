@@ -1,4 +1,37 @@
 
 run "# This is a global definition example"
 run "# It will run for every machine"
-run "# This is t test"
+
+run "# Specific definitions should go into machines/MACHINE_NAME"
+
+do_run "echo 'Since the file does not exist, this should be called. A RUN message appears.'"
+  unless_file "/this/file/most/likely/does/not/exist"
+
+do_run "echo '${USER} things inside do_run and are actually bash.'"
+ if_ "[[ -f /bin/bash ]]"
+
+function functions_too_can_be_used() {
+  cat <<EOM
+This function can perform some more complicated
+actions and commands. To keep things under control
+grind will refuse to run the same command twice.
+
+So the next do_run should raise a warn and not
+invoke this function again.
+EOM
+}
+
+do_run "functions_too_can_be_used"
+ if_ "type functions_too_can_be_used &> /dev/null"
+
+do_run "functions_too_can_be_used"
+ if_ "true"
+
+do_run "echo 'This should not run, a SKIP message should appear'"
+ unless_file "${0}"
+
+run "echo 'stop_on_fail' should stop the whole execution if the last command failed."
+stop_on_fail
+
+run "false"
+stop_on_fail "False always fail."

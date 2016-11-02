@@ -4,8 +4,10 @@ function install_homebrew() {
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 }
 
+run "exit 1; # remove this line from defintions/bootstrap to actually enable the bootstrap"
+
 do_run "xcode-select --install"
   unless "pkgutil --pkg-info=com.apple.pkg.CLTools_Executables > /dev/null "
 
 do_run "install_homebrew"
-  unless "[[ -d /usr/local/Homebrew ]]"
+  unless_dir "/usr/local/Homebrew"

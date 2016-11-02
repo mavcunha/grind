@@ -3,6 +3,7 @@
 declare -gA __GRIND_EXECS
 declare -g  __GRIND_CMD_EXIT_CODE
 declare -g  __GRIND_CMD_NEXT
+declare -g  __GRIND_CMD_LAST
 
 function __strip_spaces() {
   echo ${1// /}
@@ -13,7 +14,8 @@ function __iexec() {
   log "__iexec: ${1}"
   [[ -n ${__GRIND_EXECS[${k}]} ]] && warn "already ran: ${1}\n" && return 42
   log "mark: ${1} as ran"
-  __GRIND_EXECS[${k}]=${1}
+  __GRIND_EXECS[${k}]="${1}"
+  __GRIND_CMD_LAST="${1}"
   log "call: ${1}"
   eval "${1}"
 }
@@ -53,6 +55,9 @@ function __conditional_run() {
   fi
 }
 
+
+### Public accessible API
+
 function do_run() {
   log "do_run: ${1}"
   in_cyan "do_run: ${1}\n"
@@ -79,6 +84,12 @@ function unless_file() {
   unless "[[ -f \"${1}\" ]]"
 }
 
+function unless_dir() {
+  log "unless_dir: ${1}"
+  in_cyan "\tunless_dir: ${1}\n"
+  unless "[[ -d \"${1}\" ]]"
+}
+
 function unless_on_path() {
   log "unless_on_path: ${1}"
   in_cyan "\tunless_on_path: ${1}\n"
@@ -89,4 +100,14 @@ function if_() {
   log "if_: ${1}\n"
   in_cyan "\tif_: ${1}\n"
   __conditional_run "${1}"  "^0$"
+}
+
+function stop_on_fail() {
+  local msg="${1:-"stop_on_fail defined"}"
+  log "stop_on_fail: ${1}"
+  if [[ $(__last_exit_code) -ne 0 ]]; then
+    in_red "STOP: ${__GRIND_CMD_LAST} exited with $(__last_exit_code)\n"
+    in_red "STOP: ${msg}\n"
+    exit 1
+  fi
 }
