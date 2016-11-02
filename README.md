@@ -1,22 +1,35 @@
 # Grind
 
-`grind` is a set of bash scripts to configure macOS machines.
+`grind` is a set of bash scripts to configure macOS machines. It provides an
+easier API for configuration tasks.
 
-## How to use it
+## How to use it (short)
 
-Install the basic software for `grind` itself work.
+1. Download or clone grind.
+2. Check the `definitions` directory and write your own definition.
+3. run `./grind update run`
 
+## How to use it (long)
+
+### Bootstrap
+
+`grind` provides a `bootstrap` command for a pre-setup for grind itself:
+
+```bash
+grind bootstrap run
 ```
-$ ./grind bootstrap run
-```
 
-Load and execute the configurations/installation definitions, see bellow.
+This is a special definition and it should set and install what we understand
+as dependencies for the other definitions, like 'homebrew' which itself depends
+on 'XCode CLI Tools', so the bootstrap will install 'XCode CLI Tools' followed
+by 'homebrew'.
 
-```
-$ ./grind update run
-```
+### Update
 
-## Definitions
+`grind update run` is the daily command from `grind`, it will execute and run all
+definitions for current machine.
+
+### Definitions
 
 All `grind` does is execute some functions in series defined in the `definitions` directory.
 Here's an example of a definition:
