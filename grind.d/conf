@@ -1,0 +1,25 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="\tGrind's configuration"
+SUBCOMMAND_HELP=$(cat <<EOH
+
+show            Show all defined configurations
+
+EOH
+)
+
+function display_conf() {
+  local conf="${1}"
+  declare "value=${!conf}"
+  in_cyan "${conf}="
+  in_yellow "${value}\n"
+}
+
+case ${1} in
+  show)
+    echo "grind configurations:"
+    display_conf "GRIND_CONF_DIR"
+    display_conf "GRIND_CONF_FILE"
+    display_conf "GRIND_DEF_DIR"
+    display_conf "GRIND_MACHINE_NAME"
+  ;;
+esac

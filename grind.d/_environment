@@ -20,7 +20,14 @@ function open_file() {
   __osx && open ${file} || xdg-open ${file}
 }
 
-# high level state definitions
-GRIND_DEF_DIR="${ROOT_DIR}/definitions"
+# configuration file def
+GRIND_CONF_DIR="${ROOT_DIR}/conf"
+GRIND_CONF_FILE="${GRIND_CONF_DIR}/grind.conf"
 
-GRIND_MACHINE_NAME="$(hostname -s)"
+# default values for user configurations
+GRIND_DEF_DIR="${ROOT_DIR}/definitions"
+GRIND_MACHINE_NAME=$(hostname -s)
+
+# load user configurations
+log "user configurations from: ${GRIND_CONF_FILE}"
+[[ -f ${GRIND_CONF_FILE} ]] && . ${GRIND_CONF_FILE}
