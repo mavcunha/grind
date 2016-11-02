@@ -61,7 +61,7 @@ function do_run() {
 
 function run() {
   log "run: ${1}"
-  in_cyan "run: ${1}"
+  in_cyan "run: ${1}\n"
   __yellow_box "RUN"
   __iexec "${1}"
   __capture_exit_code

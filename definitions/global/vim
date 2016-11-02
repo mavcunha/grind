@@ -1,3 +1,0 @@
-
-do_run "brew install vim"
-  unless_file "/usr/local/bin/vim"

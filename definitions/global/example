@@ -1,0 +1,4 @@
+
+run "# This is a global definition example"
+run "# It will run for every machine"
+run "# This is t test"
