@@ -22,10 +22,10 @@ function log() {
 
 # warn users of outdated bash versions
 if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
-  in_yellow "WARNING: bash version is '${BASH_VERSION}'"
-  in_yellow "WARNING: which is less than version 4."
-  in_yellow "WARNING: Not all scripts and commands will work properly."
-  in_yellow "WARNING: Consider installing a more recent version of bash."
+  in_yellow "WARNING: bash version is '${BASH_VERSION}'\n"
+  in_yellow "WARNING: which is less than version 4.\n"
+  in_yellow "WARNING: Not all scripts and commands will work properly.\n"
+  in_yellow "WARNING: Consider installing a more recent version of bash.\n"
 else
   # DEBUG flag is defined as soon as possible
   DEBUG=$(eval "[[ -n \${${MAIN_COMMAND^^}_DEBUG} ]] && echo 'true' ")
@@ -34,8 +34,7 @@ fi
 # add itself to PATH if needed
 log "check if ${MAIN_COMMAND} is on PATH"
 type -a ${MAIN_COMMAND} &> /dev/null
-if [[ $? != 0 ]]; then
-  in_yellow "${MAIN_COMMAND} CLI is not on your PATH, it will be easier to use if it was."
+if [[ $? -ne 0 ]]; then
   export PATH=${PATH}:${ROOT_DIR}
 fi
 
