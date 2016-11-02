@@ -93,7 +93,7 @@ function unless_dir() {
 function unless_on_path() {
   log "unless_on_path: ${1}"
   in_cyan "\tunless_on_path: ${1}\n"
-  unless "type -a ${1} &> /dev/null"
+  unless "type ${1} &> /dev/null"
 }
 
 function if_() {

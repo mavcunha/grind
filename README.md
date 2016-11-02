@@ -45,6 +45,8 @@ do_run "brew install leiningen"
   unless_file "/usr/local/bin/lein"
 ```
 
+See [Grind Definition API](https://github.com/mavcunha/grind/wiki/Grind-Definition-API)
+
 ### Definitions directory organization
 
 First `grind` will load and execute whatever is in the `global` directory,
