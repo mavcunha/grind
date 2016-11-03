@@ -9,6 +9,7 @@ configure and install things that are one time only. After that use 'grind updat
 run               Will install:
                   * XCode CLI tools
                   * Homebrew
+                  * Install bash if current bash is lower than version 4
 
 EOH
 )
