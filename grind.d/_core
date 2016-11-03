@@ -39,6 +39,15 @@ function __yellow_box() {
 function __green_box() {
   __box "$(in_green "${1}")"
 }
+function __magenta_box() {
+  __box "$(in_magenta "${1}")"
+}
+
+function __run() {
+  __yellow_box 'RUN'
+  __iexec "${__GRIND_CMD_NEXT}"
+  __capture_exit_code
+}
 
 function __conditional_run() {
   local cmd="${1}"
@@ -47,9 +56,7 @@ function __conditional_run() {
   __iexec "${cmd}"
   __capture_exit_code
   if [[ $(__last_exit_code) =~ ${reg} ]]; then
-    __yellow_box 'RUN'
-    __iexec "${__GRIND_CMD_NEXT}"
-    __capture_exit_code
+    __run
   else
     __green_box 'SKIP'
   fi

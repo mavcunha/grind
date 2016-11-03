@@ -1,0 +1,8 @@
+# vim: ft=sh
+
+# during a dryrun we override
+# the execution function for a NOOP
+function __run() {
+  log "__run (noop): ${__GRIND_CMD_NEXT}"
+  __magenta_box "NOOP"
+}

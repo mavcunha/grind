@@ -6,7 +6,14 @@ SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
 run               Update machine with latest definitions
-list              List the definitions that will be called
+
+dry               Do not actually execute do_run, show
+                  definitions that would run as NOOP.
+                  This should be safe as long the run checks
+                  are safe.
+
+list              List the definitions that will be executed
+                  for this machine.
 
 EOH
 )
@@ -41,4 +48,8 @@ case ${1} in
     _list_recur "${GRIND_DEF_DIR}/global"
     _list_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
   ;;
+  dry)
+    use "core-dryrun"
+    _load_recur "${GRIND_DEF_DIR}/global"
+    _load_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
 esac
