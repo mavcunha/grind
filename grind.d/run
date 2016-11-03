@@ -1,0 +1,35 @@
+# vim: ft=sh
+use "core"
+
+SUBCOMMAND_DESC="\tRun an arbritrary definition"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+
+run [--dry|-d]  DEF       Relative name of a definition, 
+                          example: grind run global/utilities
+                          If --dry or -d is given will run
+                          on 'dry-run' mode which will not
+                          execute 'do_run' commands
+EOH
+)
+
+function run_def() {
+  local def="${1}"
+  if [[ -f ${GRIND_DEF_DIR}/${def} ]]; then
+    in_cyan ">>>${def}<<<\n"
+    . ${GRIND_DEF_DIR}/${def} 
+  elif [[ -n ${def} ]]; then
+    in_red "${def} definition not found.\n" 
+  fi
+}
+
+case ${1} in
+  -d|--dry)
+    use "core-dryrun"
+    in_yellow "dry-run mode\n"
+    run_def "${2}"
+  ;;
+  *)
+    run_def "${1}"
+  ;;
+esac

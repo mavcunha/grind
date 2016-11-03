@@ -1,0 +1,20 @@
+# vim: ft=sh
+
+SUBCOMMAND_DESC="\tInspect definitions"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+
+list        List all definitions, not only those
+            which apply to this machine.
+
+EOH
+)
+
+case ${1} in
+  list)
+    log "listing from ${GRIND_DEF_DIR}"
+    for i in $(export LC_COLLATE=C; find ${GRIND_DEF_DIR} -not -path '*/\.*' -type f -or -type l | sort); do
+      in_cyan ">>>${i##${GRIND_DEF_DIR}/}<<<\n";
+    done
+  ;;
+esac
