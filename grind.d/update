@@ -6,26 +6,39 @@ SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
 run               Update machine with latest definitions
+list              List the definitions that will be called
 
 EOH
 )
 
-
-function _load_recursively() {
+function _recur() {
   local dir="${1}"
-  log "_load_recursively: ${dir}"
+  local cmd="${2}"
+  log "_recur: ${dir} cmd: ${cmd}"
   if [[ -d ${dir} ]]; then
     for i in $(export LC_COLLATE=C; find ${dir} -type f -or -type l | sort); do
       log "loading: ${i}"
-      in_cyan "\n>>>${i##${GRIND_DEF_DIR}}<<<\n";
-      source "${i}";
+      in_cyan ">>>${i##${GRIND_DEF_DIR}/}<<<\n";
+      eval "${2} ${i}";
     done
   fi
 }
 
+function _load_recur() {
+  _recur "${1}" "source";
+}
+
+function _list_recur() {
+  _recur "${1}" "#";
+}
+
 case ${1} in
   run)
-    _load_recursively "${GRIND_DEF_DIR}/global"
-    _load_recursively "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
+    _load_recur "${GRIND_DEF_DIR}/global"
+    _load_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
+  ;;
+  list)
+    _list_recur "${GRIND_DEF_DIR}/global"
+    _list_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
   ;;
 esac
