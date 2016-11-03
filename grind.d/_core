@@ -96,6 +96,12 @@ function unless_on_path() {
   unless "type ${1} &> /dev/null"
 }
 
+function unless_link() {
+  log "unless_link: ${1}"
+  in_cyan "\tunless_link: ${1}\n"
+  unless "[[ -L \"${1}\" ]]"
+}
+
 function if_() {
   log "if_: ${1}\n"
   in_cyan "\tif_: ${1}\n"
