@@ -1,7 +1,6 @@
 # Grind
 
-`grind` is a set of bash scripts to configure macOS machines. It provides an
-easier API for configuration tasks.
+`grind` is tool to help you configure and maintain your machine.
 
 ## How to use it (short)
 
@@ -19,10 +18,10 @@ easier API for configuration tasks.
 grind bootstrap run
 ```
 
-This is a special definition and it should set and install what we understand
-as dependencies for the other definitions, like 'homebrew' which itself depends
-on 'XCode CLI Tools', so the bootstrap will install 'XCode CLI Tools' followed
-by 'homebrew'.
+This is a special definition and it should set and install the requirements
+from `grind` itself. On macOS it means installing [XCode CLI
+Tools](https://developer.apple.com/xcode/features/) and
+[Homebrew](http://brew.sh/).
 
 ### Update
 
@@ -32,7 +31,7 @@ definitions for current machine.
 ### Definitions
 
 All `grind` does is execute some functions in series defined in the `definitions` directory.
-Here's an example of a definition:
+Here's an example of a definition on macOS:
 
 ```bash
 use "brew"
