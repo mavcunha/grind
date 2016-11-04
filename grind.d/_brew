@@ -3,6 +3,7 @@ use "core"
 
 function brew() {
   local formula="${1}"
+  log "brew: ${formula}"
   do_run "brew install ${formula}"
     unless "brew list --versions ${formula} &> /dev/null"
 }

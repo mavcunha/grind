@@ -32,10 +32,12 @@ function _recur() {
 }
 
 function _load_recur() {
+  log "invoke _recur dir: ${1} cmd: source"
   _recur "${1}" "source";
 }
 
 function _list_recur() {
+  log "invoke _recur dir: ${1} cmd: #"
   _recur "${1}" "#";
 }
 
@@ -49,6 +51,7 @@ case ${1} in
     _list_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
   ;;
   dry)
+    log "requiring core-dryrun"
     use "core-dryrun"
     _load_recur "${GRIND_DEF_DIR}/global"
     _load_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"

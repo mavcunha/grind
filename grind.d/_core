@@ -56,8 +56,10 @@ function __conditional_run() {
   __iexec "${cmd}"
   __capture_exit_code
   if [[ $(__last_exit_code) =~ ${reg} ]]; then
+    log "exit matched ${reg}: RUN"
     __run
   else
+    log "exit didn't match ${reg}: SKIP"
     __green_box 'SKIP'
   fi
 }
