@@ -8,8 +8,12 @@ echo "Review definitions/bootstrap and remove this line to enable it."; exit 1;
 
 set -e
 
+function _msg() {
+  echo "GRIND: ${1}"
+}
+
 function install_homebrew() {
-  echo "Installing homebrew"
+  _msg "Installing homebrew"
   /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 }
 
@@ -18,24 +22,27 @@ function xcode_cli_installed() {
 }
 
 function xcode_cli_install() {
-  echo "Installing XCode CLI Tools"
+  _msg "Installing XCode CLI Tools"
   xcode-select --install
-  echo "Press return after XCode CLI installation"
+  _msg "Press any key after XCode CLI installation, CTRL-C to cancel."
   read
 }
 
 # Install XCode CLI Tools
-echo "Check if XCode CLI Tools is installed"
+_msg "Check if XCode CLI Tools is installed"
 xcode_cli_installed || xcode_cli_install
 
 # Install Homebrew if XCode is present
 if [[ $(xcode_cli_installed) -eq 0 ]]; then
-  [[ -d "/usr/local/Homebrew" ]] || install_homebrew
+  type -a brew &> /dev/null || install_homebrew
 fi
 
 # If bash is lower than version 4
 # grind won't work.
 if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
-  echo "Bash version is too old, installing a newer version."
+  _msg "Bash version is too old (< 4), installing a newer version."
   brew install bash
+  _msg "Please note that grind requires bash >= 4"
+  _msg "You can now run '/usr/local/bash'"
+  _msg "And then invoke ./grind update run"
 fi
