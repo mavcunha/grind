@@ -55,3 +55,7 @@ these are assumed to be definitions to be applied to any machine.
 After that `grind` will load scripts from the `machines` directory, where it will try
 to find a subdirectory with the machine name and from there load the scripts. These
 definitions are specific for each machine you want to maintain.
+
+## Documentation
+
+[Click here for more information.](https://github.com/mavcunha/grind/wiki)
