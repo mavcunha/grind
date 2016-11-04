@@ -3,7 +3,8 @@ use "core"
 
 function brew_pkg() {
   local formula="${1}"
-  log "brew: ${formula}"
+  local short=${formula##*/}
+  log "brew_pkg: ${formula} | short formula: ${short}"
   do_run "brew install ${formula}"
-    unless "brew list --versions ${formula} &> /dev/null"
+    unless "brew list --versions ${short} &> /dev/null"
 }
