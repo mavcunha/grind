@@ -21,7 +21,9 @@ function __iexec() {
 }
 
 function __capture_exit_code() {
-  __GRIND_CMD_EXIT_CODE=$?
+  local code=$?
+  log "__capture_exit_code: ${code}"
+  __GRIND_CMD_EXIT_CODE=$code
 }
 
 function __last_exit_code() {
