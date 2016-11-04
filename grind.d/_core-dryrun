@@ -1,5 +1,6 @@
 # vim: ft=sh
 
+in_yellow "dry-run mode enabled\n"
 # during a dryrun we override
 # the execution function for a NOOP
 function __run() {

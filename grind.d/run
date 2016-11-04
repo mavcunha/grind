@@ -28,7 +28,6 @@ case ${1} in
   -d|--dry)
     log "requiring core-dryrun"
     use "core-dryrun"
-    in_yellow "dry-run mode\n"
     run_def "${2}"
   ;;
   *)
