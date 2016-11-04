@@ -23,9 +23,9 @@ function log() {
 # warn users of outdated bash versions
 if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
   in_yellow "WARNING: bash version is '${BASH_VERSION}'\n"
-  in_yellow "WARNING: which is less than version 4.\n"
-  in_yellow "WARNING: Not all scripts and commands will work properly.\n"
-  in_yellow "WARNING: Consider installing a more recent version of bash.\n"
+  in_yellow "WARNING: which is less than version 4\n"
+  in_yellow "WARNING: grind can only run bootstrap with bash < 4\n"
+  in_yellow "WARNING: Please run './grind bootstrap run' to install a newer bash\n"
 else
   # DEBUG flag is defined as soon as possible
   DEBUG=$(eval "[[ -n \${${MAIN_COMMAND^^}_DEBUG} ]] && echo 'true' ")
