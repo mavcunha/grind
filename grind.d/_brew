@@ -1,0 +1,8 @@
+# vim: ft=sh
+use "core"
+
+function brew() {
+  local formula="${1}"
+  do_run "brew install ${formula}"
+    unless "brew list --versions ${formula} &> /dev/null"
+}
