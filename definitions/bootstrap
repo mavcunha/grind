@@ -14,7 +14,6 @@ function install_homebrew() {
 }
 
 function xcode_cli_installed() {
-  echo "Check if XCode CLI Tools is installed"
   pkgutil --pkg-info=com.apple.pkg.CLTools_Executables > /dev/null
 }
 
@@ -26,6 +25,7 @@ function xcode_cli_install() {
 }
 
 # Install XCode CLI Tools
+echo "Check if XCode CLI Tools is installed"
 xcode_cli_installed || xcode_cli_install
 
 # Install Homebrew if XCode is present
