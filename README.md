@@ -1,6 +1,6 @@
 # Grind
 
-`grind` is tool to help you configure and maintain your machine.
+`grind` is a tool to help you configure and maintain your machine.
 
 ## How to use it (short)
 
