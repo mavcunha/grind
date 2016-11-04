@@ -7,14 +7,26 @@ Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 list        List all definitions, not only those
             which apply to this machine.
 
+show DEF    Show the contents of a definition, where
+            DEF is the definition name, example: global/utilities
+
 EOH
 )
 
 case ${1} in
   list)
-    log "listing from ${GRIND_DEF_DIR}"
+    log "listing definitions from ${GRIND_DEF_DIR}"
     for i in $(export LC_COLLATE=C; find ${GRIND_DEF_DIR} -not -path '*/\.*' -type f -or -type l | sort); do
       in_cyan ">>>${i##${GRIND_DEF_DIR}/}<<<\n";
     done
+  ;;
+  show)
+    log "show contents of ${2}"
+    if [[ -f "${GRIND_DEF_DIR}/${2}" ]]; then
+      log "cating ${GRIND_DEF_DIR}/${2}"
+      cat "${GRIND_DEF_DIR}/${2}"
+    elif [[ -n ${2} ]]; then
+      error "'${2}' not found.\n"
+    fi
   ;;
 esac
