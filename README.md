@@ -37,7 +37,7 @@ Here's an example of a definition:
 ```bash
 use "brew"
 
-brew "vim"
+brew_pkg "vim"
 
 do_run "mkdir -p ${HOME}/.vim/bundle"
   unless_dir "${HOME}/.vim/bundle"
