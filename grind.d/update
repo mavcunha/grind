@@ -51,7 +51,6 @@ case ${1} in
     _list_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
   ;;
   dry)
-    log "requiring core-dryrun"
     use "core-dryrun"
     _load_recur "${GRIND_DEF_DIR}/global"
     _load_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"

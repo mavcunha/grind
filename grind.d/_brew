@@ -1,10 +1,17 @@
 # vim: ft=sh
-use "core"
 
 function brew_pkg() {
   local formula="${1}"
   local short=${formula##*/}
-  log "brew_pkg: ${formula} | short formula: ${short}"
+  log "brew_pkg: ${formula} shortname: ${short}"
   do_run "brew install ${formula}"
     unless "brew list --versions ${short} &> /dev/null"
+}
+
+function brew_cask() {
+  local cask="${1}"
+  local short=${cask##*/}
+  log "brew_cask: ${cask} shortname: ${short}"
+  do_run "brew cask install ${cask}"
+    unless "brew cask list --versions ${short} &> /dev/null"
 }

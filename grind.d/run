@@ -26,7 +26,6 @@ function run_def() {
 
 case ${1} in
   -d|--dry)
-    log "requiring core-dryrun"
     use "core-dryrun"
     run_def "${2}"
   ;;

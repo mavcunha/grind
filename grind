@@ -103,6 +103,7 @@ function warn() {
 }
 
 function use() {
+  log "requiring: ${1}"
   . ${SUBCOMMANDS_DIR}/_${1}
 }
 
