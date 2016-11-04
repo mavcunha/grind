@@ -35,17 +35,32 @@ All `grind` does is execute some functions in series defined in the `definitions
 Here's an example of a definition:
 
 ```bash
-do_run "brew install httpie"
-  unless_file "/usr/local/bin/http"
+use "brew"
 
-do_run "brew install jq"
-  unless_file "/usr/local/bin/jq"
+brew "vim"
 
-do_run "brew install leiningen"
-  unless_file "/usr/local/bin/lein"
+do_run "mkdir -p ${HOME}/.vim/bundle"
+  unless_dir "${HOME}/.vim/bundle"
+
+function install_bundles() {
+  local bundles=("${!1}")
+  for b in ${bundles[@]}; do
+    local repo=${b}
+    local target=${b#*/}
+
+    do_run "git clone https://github.com/${repo}.git ${HOME}/.vim/bundle/${target}"
+      unless_dir "${HOME}/.vim/bundle/${target}"
+  done
+}
+
+vim_bundles=(
+  'tpope/vim-pathogen'
+  'tpope/vim-surround'
+  'tpope/vim-unimpaired'
+  'vim-ruby/vim-ruby')
+
+install_bundles vim_bundles[@]
 ```
-
-See [Grind Definition API](https://github.com/mavcunha/grind/wiki/Grind-Definition-API)
 
 ### Definitions directory organization
 
