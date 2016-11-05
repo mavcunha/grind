@@ -18,6 +18,7 @@ function __iexec() {
   __GRIND_CMD_LAST="${1}"
   log "call: ${1}"
   eval "${1}"
+  __capture_exit_code
 }
 
 function __capture_exit_code() {
@@ -48,7 +49,6 @@ function __magenta_box() {
 function __run() {
   __yellow_box 'RUN'
   __iexec "${__GRIND_CMD_NEXT}"
-  __capture_exit_code
 }
 
 function __conditional_run() {
@@ -56,7 +56,6 @@ function __conditional_run() {
   local reg="${2}"
   log "__conditional_run: ${cmd} re: ${reg}"
   __iexec "${cmd}"
-  __capture_exit_code
   if [[ $(__last_exit_code) =~ ${reg} ]]; then
     log "exit matched ${reg}: RUN"
     __run
@@ -78,9 +77,8 @@ function do_run() {
 function run() {
   log "run: ${1}"
   in_cyan "run: ${1}\n"
-  __yellow_box "RUN"
-  __iexec "${1}"
-  __capture_exit_code
+  __GRIND_CMD_NEXT="${1}"
+  __run
 }
 
 function unless() {
