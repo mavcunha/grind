@@ -5,11 +5,14 @@ SUBCOMMAND_DESC="\tRun an arbritrary definition"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
-run [--dry|-d]  DEF       Relative name of a definition,
-                          example: grind run global/utilities
-                          If --dry or -d is given will run
-                          on 'dry-run' mode which will not
-                          execute 'do_run' commands
+run [--dry|-d|--force|-f]  DEF      Relative name of a definition,
+                                    example: grind run global/utilities
+                                    If --dry or -d is given will run
+                                    on 'dry-run' mode which will not
+                                    execute 'do_run' commands.
+                                    If --force or -d is given will run
+                                    on 'force' mode which will execute
+                                    regardless run check results.
 EOH
 )
 
