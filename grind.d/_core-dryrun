@@ -1,8 +1,24 @@
 # vim: ft=sh
+SUBCOMMAND_DESC="Library for dry-run mode"
+SUBCOMMAND_HELP=$(cat <<EOH
 
-in_yellow "dry-run mode enabled\n"
-# during a dryrun we override
-# the execution function for a NOOP
+Usage:
+
+This library should be included when we
+want override the main execution function
+for a NOOP function.
+
+Functions:
+
+__run       This function actually override the
+            same function on '_core' library.
+
+EOH
+)
+
+# aware users of dry-run mode
+[[ -z ${*} ]] || in_yellow "dry-run mode enabled\n"
+
 function __run() {
   log "__run (noop): ${__GRIND_CMD_NEXT}"
   __magenta_box "NOOP"

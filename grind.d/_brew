@@ -1,4 +1,18 @@
 # vim: ft=sh
+SUBCOMMAND_DESC="Library for homebrew definitions"
+SUBCOMMAND_HELP=$(cat <<EOH
+Functions:
+
+brew_pkg PKG      brew_pkg "package_name"
+                  will install package_name unless
+                  it is already installed.
+
+brew_cask CASK    brew_cask "cask_name"
+                  will install cask_name unless
+                  it is already installed.
+
+EOH
+)
 
 function brew_pkg() {
   local formula="${1}"

@@ -2,6 +2,16 @@
 # This file is loaded first and anything defined here
 # will be available to all subcommands.
 # This is a valid bash file and will execute
+SUBCOMMAND_DESC="Environment setttings"
+SUBCOMMAND_HELP=$(cat <<EOH
+
+This is a plain bash file that is loaded
+before any other library and/or command.
+
+Things that are "global" can go here.
+
+EOH
+)
 
 # Example, force Java to version 1.7 for all subcomands.
 # export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)

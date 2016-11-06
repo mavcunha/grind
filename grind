@@ -41,8 +41,7 @@ fi
 # environment settings that depend on a project
 [[ -f ${SUBCOMMANDS_DIR}/_environment ]] && . ${SUBCOMMANDS_DIR}/_environment
 
-function _list_commands()
-{
+function _list_commands() {
   echo
   echo "Subcommands available ('${MAIN_COMMAND} SUBCOMMAND help' for usage):"
   echo
@@ -53,8 +52,7 @@ function _list_commands()
   exit 1
 }
 
-function _list_libraries()
-{
+function _list_libraries() {
   echo
   echo "Libraries available ('${MAIN_COMMAND} LIBRARY' for more information):"
   echo
@@ -66,14 +64,14 @@ function _list_libraries()
 }
 
 function _subcommand_help() {
-    local subcmd=${1}
-    local subhelp=${2}
-    echo
-    echo "Showing '${MAIN_COMMAND} ${subcmd}' available actions"
-    echo
-    echo "${subhelp}"
-    echo
-    exit 1
+  local subcmd=${1}
+  local subhelp=${2}
+  echo
+  echo "Showing '${MAIN_COMMAND} ${subcmd}' available actions"
+  echo
+  echo "${subhelp}"
+  echo
+  exit 1
 }
 
 function _help() {
@@ -107,30 +105,6 @@ function use() {
   . ${SUBCOMMANDS_DIR}/_${1}
 }
 
-function random_hex() {
-  local chars=${1:-32}
-  echo $(cat /dev/urandom | env LC_CTYPE=C tr -cd 'a-f0-9' | head -c ${chars})
-}
-
-function check_process()
-{
-  log "check_process with '${1}'"
-  echo "pgrep -fl \"${1}\" | grep -qv pgrep && (tput -Txterm setaf 2; echo -e 'OK';)  || (tput -Txterm setaf 1; echo \"**NOK**\")"
-}
-
-function stop_process() {
-  local appname="${*}"
-  local pid=$(pgrep -f "${appname}")
-  log "stop process:${appname} (${pid})"
-  pkill -f "${appname}" &> /dev/null
-  [[ -z ${pid} ]] && return
-  while kill -0 "${pid}" &> /dev/null; do
-    log "waiting process:${appname} (${pid}) stop"
-    sleep 1; ((limit++))
-    [[ ${limit} -gt 10 ]] && in_red "Timeout stopping (${appname})" && break
-  done
-}
-
 _arg_subcmd=${1}
 log "got argument '${_arg_subcmd}'"
 case ${_arg_subcmd} in
@@ -150,4 +124,3 @@ case ${_arg_subcmd} in
     _handle_subcommand ${_arg_subcmd} "${@}"
     ;;
 esac
-

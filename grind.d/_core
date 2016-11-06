@@ -1,4 +1,67 @@
 # vim: ft=sh
+SUBCOMMAND_DESC="Library for run and run checks"
+SUBCOMMAND_HELP=$(cat <<EOH
+
+Usage:
+
+This is the main library of gring and it is
+required by default during the execution of
+all definitions.
+
+Public functions:
+
+do_run CMD          Will buffer command CMD for execution.
+
+run CMD             Will buffer command CMD and call __run
+                    for immediate execution.
+
+unless CMD          Will execute CMD, if CMD returns 0 it
+                    will return false. If CMD returns != 0
+                    it will return true.
+
+unless_file ARG     Same as unless "[[ -f ARG ]]"
+
+unless_dir ARG      Same as unless "[[ -d ARG ]]"
+
+unless_on_path ARG  Same as unless "[[ type ARG &> /dev/null ]]"
+
+unless_link ARG     Same as unless "[[ -L ARG ]]"
+
+if_ CMD             Will execute CMD, if CMD returns 0 it will
+                    return true. If CMD returns != 0 it will
+                    return false.
+
+stop_on_fail [MSG]  Will stop execution of grind if the the last
+                    executed command failed.
+
+Private functions:
+
+__strip_spaces ARG             Will remove all spaces of a given string.
+
+__iexec CMD                    "Idempotent Exec" will execute CMD and remember
+                               that was called. If __iexec is called with the same
+                               CMD again it will warn and won't call CMD again.
+
+__capture_exit_code            Saves last exit code for use with __last_exit_code
+
+__last_exit_code               Returns as string the last exist code encountered
+
+__box MSG                      Writes "[MSG]" on screen
+
+__yellow_box MSG               Same as __box with MSG printed in yellow
+
+__green_box MSG                Same as __box with MSG printed in green
+
+__magenta_box MSG              Same as __box with MSG printed in magenta
+
+__run                          Will invoke __iexec for the next CMD already buffered
+
+__conditional_run CMD REG      Will execute CMD through __iexec and check the exit code
+                               against REG (regular expression). If match should call __run
+                               if not should print SKIP using __green_box
+
+EOH
+)
 
 declare -gA __GRIND_EXECS
 declare -g  __GRIND_CMD_EXIT_CODE
