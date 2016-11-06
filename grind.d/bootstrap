@@ -3,19 +3,26 @@ SUBCOMMAND_DESC="Bootstrap machine"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
-This command should be run before the first setup using grind, it will
-configure and install things that are one time only. After that use 'grind update'
+This command should can be run as a first setup for the machine,
+usually should be run only once to setup the basics necessary for
+further configuration.
 
-run               Will install:
+Bootstrap depends on OS type, there's a bootstrap for macOS and
+for Linux on 'definitions/bootstrap/' directory.
+
+run               On macOS will install:
                   * XCode CLI tools
                   * Homebrew
                   * Install bash if current bash is lower than version 4
+
+                  On Linux will:
+                  not implemented yet.
 
 EOH
 )
 
 case ${1} in
   run)
-    . ${GRIND_DEF_DIR}/bootstrap
+    . ${GRIND_DEF_DIR}/bootstrap/$(__osname)
   ;;
 esac

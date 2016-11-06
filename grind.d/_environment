@@ -22,6 +22,11 @@ function __osx() {
   [[ $(uname) == "Darwin" ]]
 }
 
+# Simple macOS || Linux function
+function __osname() {
+  __osx && echo "macos" || echo "linux"
+}
+
 # This will open a file with open in OSX
 # or try xdg-open on Ubuntu...
 function open_file() {

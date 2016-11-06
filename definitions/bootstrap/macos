@@ -4,7 +4,7 @@
 # because they might not work until the bootstrap
 # is finished.
 
-echo "Review definitions/bootstrap and remove this line to enable it."; exit 1;
+echo "Review the file 'definitions/bootstrap/macos' and remove this line to enable it."; exit 1;
 
 set -e
 
@@ -34,11 +34,13 @@ xcode_cli_installed || xcode_cli_install
 
 # Install Homebrew if XCode is present
 if [[ $(xcode_cli_installed) -eq 0 ]]; then
+  _msg "Check if homebrew is installed"
   type -a brew &> /dev/null || install_homebrew
 fi
 
 # If bash is lower than version 4
 # grind won't work.
+_msg "Check Bash version"
 if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
   _msg "Bash version is too old (< 4), installing a newer version."
   brew install bash
