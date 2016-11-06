@@ -15,6 +15,9 @@ dry               Do not actually execute do_run, show
 list              List the definitions that will be executed
                   for this machine.
 
+force             Force execution regardless run checks results.
+                  This is potentially dangerous.
+
 EOH
 )
 
@@ -41,17 +44,46 @@ function _list_recur() {
   _recur "${1}" "#";
 }
 
+function _call() {
+  local func="${1}"
+  local ddirs=("${!2}")
+  for d in ${ddirs[@]}; do
+    ${func} ${d}
+  done
+}
+
+def_dirs=(
+  "${GRIND_DEF_DIR}/global"
+  "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}")
+
+
 case ${1} in
   run)
-    _load_recur "${GRIND_DEF_DIR}/global"
-    _load_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
+    in_cyan "Update run\n"
+    _call _load_recur def_dirs[@]
   ;;
   list)
-    _list_recur "${GRIND_DEF_DIR}/global"
-    _list_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
+    in_cyan "Update listing definitions\n"
+    _call _list_recur def_dirs[@]
   ;;
   dry)
+    in_cyan "Update using dry run\n"
     use "core-dryrun"
-    _load_recur "${GRIND_DEF_DIR}/global"
-    _load_recur "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}"
+    _call _load_recur def_dirs[@]
+  ;;
+  force)
+    in_cyan "Update using force\n"
+    warn "Force will run definitions regardless of its run checks results\n"
+    warn "This is potentially dangerous\n"
+    warn "Press return to continue any other key to cancel..."
+
+    read -n1 -s key
+
+    if [[ "$key" == "" ]]; then
+      use "core-force"
+      _call _load_recur def_dirs[@]
+    else
+      in_yellow "\nCanceled.\n"
+    fi
+  ;;
 esac

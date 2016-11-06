@@ -54,6 +54,8 @@ __green_box MSG                Same as __box with MSG printed in green
 
 __magenta_box MSG              Same as __box with MSG printed in magenta
 
+__red_box MSG                  Same as __box with MSG printed in red
+
 __run                          Will invoke __iexec for the next CMD already buffered
 
 __conditional_run CMD REG      Will execute CMD through __iexec and check the exit code
@@ -108,9 +110,11 @@ function __green_box() {
 function __magenta_box() {
   __box "$(in_magenta "${1}")"
 }
+function __red_box() {
+  __box "$(in_red "${1}")"
+}
 
 function __run() {
-  __yellow_box 'RUN'
   __iexec "${__GRIND_CMD_NEXT}"
 }
 
@@ -121,6 +125,7 @@ function __conditional_run() {
   __iexec "${cmd}"
   if [[ $(__last_exit_code) =~ ${reg} ]]; then
     log "exit matched ${reg}: RUN"
+    __yellow_box 'RUN'
     __run
   else
     log "exit didn't match ${reg}: SKIP"

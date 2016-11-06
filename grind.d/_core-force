@@ -1,0 +1,29 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="Library for forced execution mode"
+SUBCOMMAND_HELP=$(cat <<EOH
+
+Usage:
+
+This library should be included when we
+want to force executions even when run check
+would prevent execution
+
+Functions:
+
+__conditional_run CMD       Will not actually be conditional, it will
+                            call __run ignoring the result of a run check
+
+EOH
+)
+
+# aware users of running mode
+[[ -z ${*} ]] || in_yellow "force execution mode enabled\n"
+
+function __conditional_run() {
+  local cmd="${1}"
+  log "__conditional_run (forced): ${cmd}"
+  __iexec "${cmd}"
+  log "log ignoring run check, forced execution!"
+  __red_box 'FORCE'
+  __run
+}
