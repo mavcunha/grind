@@ -1,0 +1,22 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="Library handling macOS defaults configuration values"
+SUBCOMMAND_HELP=$(cat <<EOH
+Functions:
+
+defaults DOMAIN KEY VALUE              This function will set a new value or change
+                                       the current value if VALUE doesn't match.
+
+EOH
+)
+
+_DEFAULTS_CMD="/usr/bin/defaults"
+
+function defaults() {
+  local domain=${1}
+  local key=${2}
+  local value=${3}
+  [[ -z ${domain} || -z ${key} || -z ${value} ]] && \
+    error "Need domain, key and value defined.\n"
+  do_run "${_DEFAULTS_CMD} write \"${domain}\" \"${key}\" \"${value}\""
+    unless "${_DEFAULTS_CMD} read \"${domain}\" \"${key}\" | grep -q \"${value}\""
+}

@@ -116,6 +116,7 @@ function __red_box() {
 
 function __run() {
   __iexec "${__GRIND_CMD_NEXT}"
+  __yellow_box 'RUN'
 }
 
 function __conditional_run() {
@@ -125,7 +126,6 @@ function __conditional_run() {
   __iexec "${cmd}"
   if [[ $(__last_exit_code) =~ ${reg} ]]; then
     log "exit matched ${reg}: RUN"
-    __yellow_box 'RUN'
     __run
   else
     log "exit didn't match ${reg}: SKIP"
