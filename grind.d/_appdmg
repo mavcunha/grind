@@ -1,0 +1,82 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="Library for appdmg app installation from a URI"
+SUBCOMMAND_HELP=$(cat <<EOH
+Functions:
+
+appdmg 'APPNAME' 'URI'    Will download, mount and attempt to install all .app
+                          files inside this .dmg file into /Applications
+                          APPNAME should be the name of the app installed and
+                          URI
+
+EOH
+)
+
+CURL_BIN='/usr/bin/curl'
+DITTO_BIN='/usr/bin/ditto'
+HDIUTIL_BIN='/usr/bin/hdiutil'
+
+function _appdmg_download() {
+  local uri="${1}"
+  local dmg="${2}"
+  GRIND_DOWNLOAD_DIR=$(mktemp -d /tmp/grind_download.XXXXXX)
+  log "created tmpdir: ${GRIND_DOWNLOAD_DIR}"
+  ${CURL_BIN} -o "${GRIND_DOWNLOAD_DIR}/${dmg}" -C - -L -s --url "${uri}" || error "Error downloading dmg file from ${uri}"
+  GRIND_DOWNLOADED_FILE="${GRIND_DOWNLOAD_DIR}/${dmg}"
+}
+
+function _appdmg_mount() {
+  local file="${1}"
+  log "calling hdiutil on ${file}"
+  local plist=$(${HDIUTIL_BIN} mount -plist -nobrowse -readonly -mountrandom /tmp/ "${file}")
+  GRIND_HDIUTIL_MOUNT=$(echo "${plist}" | xpath "//key[.='mount-point']/following-sibling::*[1]/text()" 2>/dev/null)
+}
+
+function _safe_rm() {
+  local dir="${1}"
+  log "_safe_rm ${dir}"
+  [[ "${dir}" =~ ^/tmp/grind_download\. ]] && rm -Rf "${dir}" \
+    || warn "Directory: ${dir} does not look like a grind download directory."
+}
+
+function _appdmg_teardown() {
+  log "_appdmg_teardown"
+
+  log "unmounting ${GRIND_HDIUTIL_MOUNT}"
+  ${HDIUTIL_BIN} eject ${GRIND_HDIUTIL_MOUNT} &> /dev/null || warn "Problems unmounting ${GRIND_HDIUTIL_MOUNT}"
+
+  log "removing temporary directory ${GRIND_DOWNLOAD_DIR}"
+  _safe_rm "${GRIND_DOWNLOAD_DIR}"
+}
+
+function _appdmg_install() {
+  local mount="${1}"
+  while read file; do
+    appfile="$(basename ${file})"
+    log "calling ditto on ${file} to /Applications/${appfile}"
+    ${DITTO_BIN} --rsrc "${file}" "/Applications/${appfile}" || error "Moving ${file} to /Applications"
+  done < <(find "${mount}" -type d -name "*.app" 2> /dev/null)
+}
+
+function _appdmg_process() {
+  local uri="${1}"
+  local dmg=${uri##*/}
+
+  log "init download of dmg: ${dmg} from uri: ${uri}"
+  _appdmg_download "${uri}" "${dmg}"
+
+  log "mounting: ${GRIND_DOWNLOADED_FILE}"
+  _appdmg_mount "${GRIND_DOWNLOADED_FILE}"
+
+  log "installing apps found in ${GRIND_HDIUTIL_MOUNT}"
+  _appdmg_install "${GRIND_HDIUTIL_MOUNT}"
+
+  log "call _appdmg_teardown"
+  _appdmg_teardown
+}
+
+function appdmg() {
+  local appname="${1}"
+  local uri="${2}"
+  do_run "_appdmg_process '${uri}'"
+    unless_dir "/Applications/${appname}.app"
+}
