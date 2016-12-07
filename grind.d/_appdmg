@@ -51,7 +51,7 @@ function _appdmg_teardown() {
 function _appdmg_install() {
   local mount="${1}"
   while read file; do
-    appfile="$(basename ${file})"
+    appfile=$(basename "${file}")
     log "calling ditto on ${file} to /Applications/${appfile}"
     ${DITTO_BIN} --rsrc "${file}" "/Applications/${appfile}" || error "Moving ${file} to /Applications"
   done < <(find "${mount}" -type d -name "*.app" 2> /dev/null)
