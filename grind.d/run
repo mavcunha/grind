@@ -10,7 +10,7 @@ run [--dry|-d|--force|-f]  DEF      Relative name of a definition,
                                     If --dry or -d is given will run
                                     on 'dry-run' mode which will not
                                     execute 'do_run' commands.
-                                    If --force or -d is given will run
+                                    If --force or -f is given will run
                                     on 'force' mode which will execute
                                     regardless run check results.
 EOH
