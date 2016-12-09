@@ -20,7 +20,7 @@ function _appdmg_download() {
   local dmg="${2}"
   GRIND_DOWNLOAD_DIR=$(mktemp -d /tmp/grind_download.XXXXXX)
   log "created tmpdir: ${GRIND_DOWNLOAD_DIR}"
-  ${CURL_BIN} -o "${GRIND_DOWNLOAD_DIR}/${dmg}" -C - -L -s --url "${uri}" || error "Error downloading dmg file from ${uri}"
+  ${CURL_BIN} -o "${GRIND_DOWNLOAD_DIR}/${dmg}" -C - -L -s --url "${uri}" || error "Error downloading dmg file from ${uri}\n"
   GRIND_DOWNLOADED_FILE="${GRIND_DOWNLOAD_DIR}/${dmg}"
 }
 
@@ -28,21 +28,24 @@ function _appdmg_mount() {
   local file="${1}"
   log "calling hdiutil on ${file}"
   local plist=$(${HDIUTIL_BIN} mount -plist -nobrowse -readonly -mountrandom /tmp/ "${file}")
-  GRIND_HDIUTIL_MOUNT=$(echo "${plist}" | xpath "//key[.='mount-point']/following-sibling::*[1]/text()" 2>/dev/null)
+  log "plist: ${plist}"
+  GRIND_HDIUTIL_MOUNT=$(echo "${plist}" | \
+    awk '/<?xml/,0{if (!/<?xml/)print}' | \
+    xpath "//key[.='mount-point']/following-sibling::*[1]/text()" 2>/dev/null)
 }
 
 function _safe_rm() {
   local dir="${1}"
   log "_safe_rm ${dir}"
   [[ "${dir}" =~ ^/tmp/grind_download\. ]] && rm -Rf "${dir}" \
-    || warn "Directory: ${dir} does not look like a grind download directory."
+    || warn "Directory: ${dir} does not look like a grind download directory.\n"
 }
 
 function _appdmg_teardown() {
   log "_appdmg_teardown"
 
   log "unmounting ${GRIND_HDIUTIL_MOUNT}"
-  ${HDIUTIL_BIN} eject ${GRIND_HDIUTIL_MOUNT} &> /dev/null || warn "Problems unmounting ${GRIND_HDIUTIL_MOUNT}"
+  ${HDIUTIL_BIN} eject ${GRIND_HDIUTIL_MOUNT} &> /dev/null || warn "Problems unmounting ${GRIND_HDIUTIL_MOUNT}\n"
 
   log "removing temporary directory ${GRIND_DOWNLOAD_DIR}"
   _safe_rm "${GRIND_DOWNLOAD_DIR}"
@@ -53,7 +56,7 @@ function _appdmg_install() {
   while read file; do
     appfile=$(basename "${file}")
     log "calling ditto on ${file} to /Applications/${appfile}"
-    ${DITTO_BIN} --rsrc "${file}" "/Applications/${appfile}" || error "Moving ${file} to /Applications"
+    ${DITTO_BIN} --rsrc "${file}" "/Applications/${appfile}" || error "Moving ${file} to /Applications\n"
   done < <(find "${mount}" -type d -name "*.app" 2> /dev/null)
 }
 
