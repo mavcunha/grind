@@ -194,3 +194,14 @@ function stop_on_fail() {
     exit 1
   fi
 }
+
+function run_def() {
+  local def="${1}"
+  if [[ -f ${GRIND_DEF_DIR}/${def} ]]; then
+    in_cyan ">>>${def}<<<\n"
+    log "running ${GRIND_DEF_DIR}/${def}"
+    . ${GRIND_DEF_DIR}/${def}
+  elif [[ -n ${def} ]]; then
+    error "${def} definition not found.\n"
+  fi
+}

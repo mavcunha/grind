@@ -16,17 +16,6 @@ run [--dry|-d|--force|-f]  DEF      Relative name of a definition,
 EOH
 )
 
-function run_def() {
-  local def="${1}"
-  if [[ -f ${GRIND_DEF_DIR}/${def} ]]; then
-    in_cyan ">>>${def}<<<\n"
-    log "running ${GRIND_DEF_DIR}/${def}"
-    . ${GRIND_DEF_DIR}/${def}
-  elif [[ -n ${def} ]]; then
-    error "${def} definition not found.\n"
-  fi
-}
-
 case ${1} in
   -d|--dry)
     use "core-dryrun"
