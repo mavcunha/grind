@@ -77,9 +77,14 @@ function _appdmg_process() {
   _appdmg_teardown
 }
 
+function appdmg_custom() {
+  local uri="${1}"
+  do_run "_appdmg_process '${uri}'"
+}
+
 function appdmg() {
   local appname="${1}"
   local uri="${2}"
-  do_run "_appdmg_process '${uri}'"
+  appdmg_custom "${uri}"
     unless_dir "/Applications/${appname}.app"
 }
