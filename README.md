@@ -4,7 +4,7 @@
 
 ## How to use it (short)
 
-1. Download or clone grind.
+1. [Download](https://github.com/mavcunha/grind/releases) or clone grind.
 2. Check the `definitions` directory and write your own definition.
 3. run `./grind update run`
 
