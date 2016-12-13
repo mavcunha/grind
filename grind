@@ -5,12 +5,12 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd)"
 PROJECTS_DIR="$(cd ${ROOT_DIR}/.. && pwd)"
 SUBCOMMANDS_DIR=${ROOT_DIR}/${MAIN_COMMAND}.d
 
-function _colored()   { tput -Txterm setaf ${1}; echo -ne ${2}; tput -Txterm sgr0; }
-function in_red()     { _colored 1 "${1}"; } # use for failures
-function in_green()   { _colored 2 "${1}"; } # use for successes
-function in_yellow()  { _colored 3 "${1}"; } # use for warnings / attention
-function in_magenta() { _colored 5 "${1}"; } # use for debug messages
-function in_cyan()    { _colored 6 "${1}"; } # use for main actions / progress
+function _color()     { tput -Txterm setaf ${1}; echo -ne ${2}; tput -Txterm sgr0; }
+function in_red()     { _color 1 "${1}"; } # use for failures
+function in_green()   { _color 2 "${1}"; } # use for successes
+function in_yellow()  { _color 3 "${1}"; } # use for warnings / attention
+function in_magenta() { _color 5 "${1}"; } # use for debug messages
+function in_cyan()    { _color 6 "${1}"; } # use for main actions / progress
 
 function log() {
   if [[ -n ${DEBUG} ]]; then
