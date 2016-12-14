@@ -2,7 +2,7 @@
 
 SUBCOMMAND_DESC="Inspect definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
-Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
 
 list        List all definitions, not only those
             which apply to this machine.
@@ -14,6 +14,9 @@ update      Will run a "git pull --ff-only" on GRIND_DEF_DIR only if
             GRIND_DEF_DIR != ROOT_DIR/definitions which means it
             only will act if your definitions directory is an
             external directory to grind's directory.
+
+find TERM   Will search for TERM in all definitions on GRIND_DEF_DIR.
+            TERM can also be a regular expression.
 
 EOH
 )
@@ -46,4 +49,11 @@ case ${1} in
     else
       warn "Definitions directory is the same as grind's directory.\n"
     fi
+  ;;
+  find)
+    [[ -n "${2}" ]] || error "Missing SEARCH_TERM to search for definitions.\n"
+    search_term="${2}"
+    in_cyan "Searching for '${search_term}' in definitions directory: ${GRIND_DEF_DIR}\n"
+    (cd ${GRIND_DEF_DIR}; grep -HERi --color=always "${search_term}" *)
+  ;;
 esac
