@@ -1,0 +1,50 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="Library for App Store (mas) definitions"
+SUBCOMMAND_HELP=$(cat <<EOH
+Functions:
+
+appstore APPNAME APPID       Will check using "mas" if APPNAME
+                             is installed, if not it will use
+                             APPID to install it using "mas".
+                             Note: The application should be
+                             already listed on 'Puchases'.
+
+
+This API is designed to use 'mas' the Mac App Store
+command-line interface (https://github.com/argon/mas).
+Which can be installed using Homebrew.
+
+This API will ignore calls and warn if 'mas' isn't installed.
+
+To ensure that 'mas' is available add to your definition
+before calls to 'appstore':
+
+use 'brew'
+brew_pkg 'mas'
+
+EOH
+)
+
+function _mas_is_installed() {
+  grep -q "${1}" <(echo "${APPS_INSTALLED:-$(mas list)}" )
+}
+
+function _mas_not_available() {
+  type -a mas &> /dev/null
+  [[ $? -ne 0 ]] && true || false
+}
+
+function appstore() {
+  local appname="${1}"
+  local appid="${2}"
+
+  log "appstore appname: ${appname} appid: ${appid}"
+
+  _mas_not_available && \
+    warn "'mas' not installed, run 'grind _mas' for more information.\n" && \
+    warn "Ignoring: appstore '${appname}' ${appid}\n" && \
+    return
+
+  do_run "mas install ${appid}"
+    unless "_mas_is_installed '${appname}'"
+}
