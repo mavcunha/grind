@@ -29,6 +29,7 @@ function _recur() {
     for i in $(export LC_COLLATE=C; find -L ${dir} -type f -or -type l | sort); do
       log "found: ${i}"
       local defname=${i##${GRIND_DEF_DIR}/}
+      log "defname: ${defname}"
       [[ ${cmd} == "run" ]] && run_def "${defname}" || in_cyan ">>>${defname}<<<\n";
     done
   fi
@@ -48,6 +49,7 @@ function _call() {
   local func="${1}"
   local ddirs=("${!2}")
   for d in ${ddirs[@]}; do
+    log "_call ${func} on ${d}"
     ${func} ${d}
   done
 }

@@ -22,6 +22,7 @@ case ${1} in
   list)
     log "listing definitions from ${GRIND_DEF_DIR}"
     for i in $(export LC_COLLATE=C; find ${GRIND_DEF_DIR} -not -path '*/\.*' -type f -or -type l | sort); do
+      log "found: ${i}"
       in_cyan ">>>${i##${GRIND_DEF_DIR}/}<<<\n";
     done
   ;;
