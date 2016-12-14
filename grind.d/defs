@@ -1,6 +1,6 @@
 # vim: ft=sh
 
-SUBCOMMAND_DESC="\tInspect definitions"
+SUBCOMMAND_DESC="Inspect definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 

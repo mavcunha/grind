@@ -1,7 +1,7 @@
 # vim: ft=sh
 use "core"
 
-SUBCOMMAND_DESC="\tRun an arbitrary definition"
+SUBCOMMAND_DESC="Run an arbitrary definition"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 

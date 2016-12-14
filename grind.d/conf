@@ -1,5 +1,5 @@
 # vim: ft=sh
-SUBCOMMAND_DESC="\tGrind's configuration"
+SUBCOMMAND_DESC="Grind's configuration"
 SUBCOMMAND_HELP=$(cat <<EOH
 
 show            Show all defined configurations
