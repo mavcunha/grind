@@ -18,6 +18,16 @@ update      Will run a "git pull --ff-only" on GRIND_DEF_DIR only if
 find TERM   Will search for TERM in all definitions on GRIND_DEF_DIR.
             TERM can also be a regular expression.
 
+link DEF    Will create, if not existent, a link of DEF to the current
+            machine. Example 'grind defs link singles/test' will enable
+            the definition 'test' to run specifically for this machine.
+            This is to provide an 'enable/disable' mechanism for definitions.
+
+unlink DEF  Will remove a link to a definition for this machine. DEF
+            should be the name of the defintion to be 'unliked' and it
+            cannot be something else other than a link. Also, see the
+            'link' description.
+
 EOH
 )
 
@@ -55,5 +65,38 @@ case ${1} in
     search_term="${2}"
     in_cyan "Searching for '${search_term}' in definitions directory: ${GRIND_DEF_DIR}\n"
     (cd ${GRIND_DEF_DIR}; grep -HERi --color=always "${search_term}" *)
+  ;;
+  link)
+    def="${2}"
+    [[ -n "${def}" ]] || error "Missing DEFINITION to link to this machine.\n"
+
+    log "Check if definition exist: ${GRIND_DEF_DIR}/${def}"
+    [[ -e "${GRIND_DEF_DIR}/${def}" ]] || error "Definition '${def}' not found.\n"
+
+    in_cyan "Linking ${def} to ${GRIND_MACHINE_NAME}\n"
+
+    defname=${def##*/}
+    defmachine=${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}
+    relative=$(perl -e 'use File::Spec; print File::Spec->abs2rel(@ARGV) . "\n"' ${GRIND_DEF_DIR} ${defmachine})
+
+    log "relative path calculated as ${relative}"
+
+    (cd ${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME} || \
+      error "Failed to change into machine def dir.\n"
+      log "ln -s ${relative}/${def} ${defname}"
+      ln -s ${relative}/${def} ${defname}
+    )
+  ;;
+  unlink)
+    def="${2}"
+    log "init unlink def: ${def}"
+    [[ -n "${def}" ]] || error "Missing DEFINITION to unlink from this machine.\n"
+
+    in_cyan "Unlinking ${def} from ${GRIND_MACHINE_NAME}\n"
+
+    target_def="${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}/${def}"
+    log "target_def: ${target_def}"
+
+    [[ -L ${target_def} ]] && rm -f ${target_def} || error "${def} not found or not a link.\n"
   ;;
 esac
