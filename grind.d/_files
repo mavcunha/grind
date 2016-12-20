@@ -1,0 +1,34 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="Library for file definitions"
+SUBCOMMAND_HELP=$(cat <<EOH
+
+This API assumes as ORIGIN for files to be
+a diretory under GRIND_DEF_DIR called 'files'. 
+The ORIGIN file name is a path to a file inside
+files, you do not need to give the full path.
+
+Functions:
+
+file ORIG DEST        Will copy the file from GRIND_DEF_DIR/files/ORIG 
+                      to DEST, if DEST doesn't exist. 
+EOH
+)
+
+__FILES_DEF_DIR="${GRIND_DEF_DIR}/files"
+
+function _file_copy() {
+  local orig="${1}"
+  local dest="${2}"
+  log "checking if ${orig} exists first."
+  [[ -f "${orig}" ]] || error "Cannot find origin ${orig} file."
+  log "do_run copy for ${orig} to ${dest}"
+  do_run "cp ${orig} ${dest}"
+}
+
+function file() {
+  local orig="${1}"
+  local dest="${2}"
+  log "file: orig=${orig} dest=${dest}"
+  _file_copy "${__FILES_DEF_DIR}/${orig}" "${dest}"
+    unless_file "${dest}"
+}
