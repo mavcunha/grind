@@ -20,7 +20,7 @@ function _appdmg_download() {
   local dmg="${2}"
   GRIND_DOWNLOAD_DIR=$(mktemp -d /tmp/grind_download.XXXXXX)
   log "created tmpdir: ${GRIND_DOWNLOAD_DIR}"
-  ${CURL_BIN} -o "${GRIND_DOWNLOAD_DIR}/${dmg}" -C - -L -s --url "${uri}" || error "Error downloading dmg file from ${uri}\n"
+  ${CURL_BIN} -o "${GRIND_DOWNLOAD_DIR}/${dmg}" -C - -L -sS --url "${uri}" || error "Error downloading dmg file from ${uri}\n"
   GRIND_DOWNLOADED_FILE="${GRIND_DOWNLOAD_DIR}/${dmg}"
 }
 
