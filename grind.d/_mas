@@ -26,7 +26,8 @@ EOH
 )
 
 function _mas_is_installed() {
-  grep -q "${1}" <(echo "${APPS_INSTALLED:-$(mas list)}" )
+  MAS_APPS_INSTALLED=${MAS_APPS_INSTALLED:-$(mas list)}
+  grep -q "${1}" <(echo "${MAS_APPS_INSTALLED}" )
 }
 
 function _mas_not_available() {
