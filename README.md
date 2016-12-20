@@ -33,6 +33,21 @@ definitions for current machine.
 All `grind` does is execute some functions in series defined in the `definitions` directory.
 Here's an example of a definition on macOS:
 
+### A simple definition
+
+This definition will install `git` through *homebrew* if is not already installed.
+
+```bash
+use "brew"
+
+brew_pkg "git"
+```
+
+### A more complex definition
+
+This definition will install `vim` thorugh *homebrew* if is not already installed, and
+configure some plugins and settings for `vim`.
+
 ```bash
 use "brew"
 
