@@ -44,7 +44,7 @@ __iexec CMD                    "Idempotent Exec" will execute CMD and remember
 
 __capture_exit_code            Saves last exit code for use with __last_exit_code
 
-__last_exit_code               Returns as string the last exist code encountered
+__last_exit_code               Returns as string the last exit code encountered
 
 __box MSG                      Writes "[MSG]" on screen
 
@@ -89,7 +89,7 @@ function __iexec() {
 function __capture_exit_code() {
   local code=$?
   log "__capture_exit_code: ${code}"
-  __GRIND_CMD_EXIT_CODE=$code
+  __GRIND_CMD_EXIT_CODE=${code}
 }
 
 function __last_exit_code() {
