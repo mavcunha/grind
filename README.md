@@ -1,6 +1,8 @@
 # Grind
 
-`grind` is a tool to help you configure and maintain your machine.
+`grind` is a tool to help you configure and maintain your machine. I wrote a
+[blog post](http://marcovaltas/com/2016/12/21/introducing-grind.html)
+explaining why I created `grind`.
 
 ## How to use it (short)
 
