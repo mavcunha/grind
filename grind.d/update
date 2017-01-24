@@ -26,7 +26,7 @@ function _recur() {
   local cmd="${2}"
   log "_recur: ${dir} cmd: ${cmd}"
   if [[ -d ${dir} ]]; then
-    for i in $(export LC_COLLATE=C; find -L ${dir} -type f -or -type l | sort); do
+    for i in $(export LC_COLLATE=C; find -L ${dir} -not -path "*/\.*" -type f -or -type l | sort); do
       log "found: ${i}"
       local defname=${i##${GRIND_DEF_DIR}/}
       log "defname: ${defname}"
