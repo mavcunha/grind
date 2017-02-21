@@ -16,11 +16,13 @@ EOH
 
 function _brew_pkg_installed() {
   PKG_INSTALLED=${PKG_INSTALLED:-$(brew list)}
+  log "brew_packages_list: ${PKG_INSTALLED}"
   grep -q "${1}" <(echo "${PKG_INSTALLED}")
 }
 
 function _brew_cask_installed() {
   CASK_INSTALLED=${CASK_INSTALLED:-$(brew cask list)}
+  log "brew_casks_list: ${CASK_INSTALLED}"
   grep -q "${1}" <(echo "${CASK_INSTALLED}")
 }
 
