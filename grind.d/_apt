@@ -1,0 +1,32 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="Library for apt definitions"
+SUBCOMMAND_HELP=$(cat <<EOH
+Functions:
+
+apt_pkg PKG      apt_pkg "package_name"
+                  will install package_name unless
+                  it is already installed.
+EOH
+)
+
+function _apt_pkg_installed() {
+  dpkg --list ${1} &>/dev/null
+}
+
+function apt_update() {
+  sudo apt-get update &>/dev/null
+}
+
+function apt_pkg() {
+  local package_name="${1}"
+  log "apt_pkg: ${package_name}"
+  do_run "sudo apt-get install -y ${package_name}"
+    unless "_apt_pkg_installed '${package_name}'"
+}
+
+function dkpg_install() {
+  local package_name="${1}"
+  local file_name="${2}"
+  do_run "sudo dpkg -i ${file_name}"
+    unless "_apt_pkg_installed '${package_name}'"
+}

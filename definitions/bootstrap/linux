@@ -1,0 +1,27 @@
+# vim: ft=sh
+
+# Bootstrap definitions won't use grind API
+# because they might not work until the bootstrap
+# is finished.
+
+# echo "Review the file 'definitions/bootstrap/linux' and remove this line to enable it."; exit 1;
+
+set -e
+
+function _msg() {
+  echo "GRIND: ${1}"
+}
+
+# Update apt package repositories
+sudo apt-get update
+
+# If bash is lower than version 4
+# grind won't work.
+_msg "Check Bash version"
+if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
+  _msg "Bash version is too old (< 4), installing a newer version."
+  sudo apt-get install bash
+  _msg "Please note that grind requires bash >= 4"
+  _msg "You can now run '/usr/local/bin/bash'"
+  _msg "And then invoke ./grind update run"
+fi
