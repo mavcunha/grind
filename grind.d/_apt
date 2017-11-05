@@ -10,7 +10,7 @@ EOH
 )
 
 function _apt_pkg_installed() {
-  dpkg --list ${1} &>/dev/null
+  dpkg -s ${1} &>/dev/null
 }
 
 function apt_update() {
