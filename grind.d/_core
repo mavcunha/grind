@@ -179,6 +179,12 @@ function unless_link() {
   unless "[[ -L \"${1}\" ]]"
 }
 
+function unless_running() {
+  log "unless_running: ${1}"
+  in_cyan "\tunless_running: ${1}\n"
+  unless "pgrep ${1} &> /dev/null"
+}
+
 function if_() {
   log "if_: ${1}\n"
   in_cyan "\tif_: ${1}\n"
