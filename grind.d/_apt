@@ -20,7 +20,7 @@ function apt_update() {
 function apt_pkg() {
   local package_name="${1}"
   log "apt_pkg: ${package_name}"
-  do_run "sudo apt-get install -y ${package_name}"
+  do_run "sudo apt-get install --yes --quiet ${package_name}"
     unless "_apt_pkg_installed '${package_name}'"
 }
 
