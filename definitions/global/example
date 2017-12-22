@@ -1,4 +1,4 @@
-
+# vim: ft=sh
 run "# This is a global definition example"
 run "# It will run for every machine"
 
@@ -29,6 +29,12 @@ do_run "functions_too_can_be_used"
 
 do_run "echo 'This should not run, a SKIP message should appear'"
  unless_file "${0}"
+
+do_run "echo 'Should SKIP as bash should be running.'"
+  unless_running 'bash'
+
+do_run "echo 'Should RUN as process blahblah probably is not running.'"
+  unless_running 'blahblah'
 
 run "echo 'stop_on_fail' should stop the whole execution if the last command failed."
 stop_on_fail
