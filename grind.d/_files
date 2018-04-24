@@ -10,7 +10,17 @@ files, you do not need to give the full path.
 Functions:
 
 file ORIG DEST        Will copy the file from GRIND_DEF_DIR/files/ORIG
-                      to DEST, if DEST doesn't exist.
+                      to DEST if DEST doesn't exist.
+
+file_force ORIG DEST  Will copy the file from GRIND_DEF_DIR/files/ORIG to
+                      DEST even if it already exists.
+
+dir ORIG DEST         Will copy all contents from GRIND_DEF_DIR/files/ORIG to
+                      DEST. ORIG and DEST must both be directories.
+
+dir_force ORIG DEST   Will copy all contents from GRIND_DEF_DIR/files/ORIG to
+                      DEST overwriting existing files. ORIG and DEST must both
+                      be directories.
 EOH
 )
 
@@ -19,7 +29,13 @@ __FILES_DEF_DIR="${GRIND_DEF_DIR}/files"
 function _file_exists () {
   local file="${1}"
   log "checking if '${file}' exists first."
-  [[ -f "${file}" ]] || error "Cannot find origin ${file} file."
+  [[ -f "${file}" ]] || error "Cannot find ${file} file."
+}
+
+function _dir_exists () {
+  local dir="${1}"
+  log "checking if directory '${dir}' exists"
+  [[ -d "${dir}" ]] || error "Cannot find directory ${dir}."
 }
 
 # Copy file only if does not exist at destination
@@ -28,7 +44,7 @@ function file() {
   local dest="${2}"
   log "file: orig=${orig} dest=${dest}"
   _file_exists "${__FILES_DEF_DIR}/${orig}"
-  do_run "cp '${__FILES_DEF_DIR}/${orig}' '${dest}'"
+  do_run "cp -v '${__FILES_DEF_DIR}/${orig}' '${dest}'"
     unless_file "${dest}"
 }
 
@@ -38,5 +54,26 @@ function file_force() {
   local dest="${2}"
   log "file_force: orig=${orig} dest=${dest}"
   _file_exists "${__FILES_DEF_DIR}/${orig}"
-  run "cp -f '${__FILES_DEF_DIR}/${orig}' '${dest}'"
+  run "cp -vf '${__FILES_DEF_DIR}/${orig}' '${dest}'"
+}
+
+# Copy contents of dir orig into dir dest
+function dir() {
+  local orig="${1%%/}"
+  local dest="${2%%/}"
+  log "dir: orig=${orig} dest=${dest}"
+  _dir_exists "${__FILES_DEF_DIR}/${orig}"
+  _dir_exists "${dest}"
+  run "cp -vrn '${__FILES_DEF_DIR}/${orig}/' '${dest}/' "
+}
+
+
+# Same as dir but overwriting existing files
+function dir_force() {
+  local orig="${1%%/}"
+  local dest="${2%%/}"
+  log "dir: orig=${orig} dest=${dest}"
+  _dir_exists "${__FILES_DEF_DIR}/${orig}"
+  _dir_exists "${dest}"
+  run "cp -vrf '${__FILES_DEF_DIR}/${orig}/' '${dest}/' "
 }
