@@ -26,6 +26,12 @@ function _brew_cask_installed() {
   grep -qE "^${1}$" <(echo "${CASK_INSTALLED}")
 }
 
+function _brew_tap_installed() {
+  TAP_INSTALLED=${TAP_INSTALLED:-$(brew tap)}
+  log "brew_tap: ${TAP_INSTALLED}"
+  grep -qE "^${1}$" <(echo "${TAP_INSTALLED}")
+}
+
 function brew_pkg() {
   local formula="${1}"
   local short=${formula##*/}
@@ -40,4 +46,11 @@ function brew_cask() {
   log "brew_cask: ${cask} shortname: ${short}"
   do_run "brew cask install ${cask}"
     unless "_brew_cask_installed '${short}'"
+}
+
+function brew_tap() {
+  local tap="${1}"
+  log "brew_tap: ${tap}"
+  do_run "brew tap ${tap}"
+    unless "_brew_cask_installed '${tap}'"
 }
