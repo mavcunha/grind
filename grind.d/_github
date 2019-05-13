@@ -1,0 +1,22 @@
+# vim: ft=sh
+SUBCOMMAND_DESC="Library to interact with github"
+SUBCOMMAND_HELP=$(cat <<EOH
+Functions:
+
+github  PKG      apt_pkg "package_name"
+                  will install package_name unless
+                  it is already installed.
+EOH
+)
+
+GITHUB_URL="https://github.com/"
+
+function github() {
+  [[ -z ${1} ]] && error "Missing user/repository argument"
+  local user_repo=(${1//\// })
+  local repository="${GITHUB_URL}/${1}.git"
+  local target_dir="${PROJECTS_DIR}/${user_repo[1]}"
+
+  do_run "git clone ${repository} ${target_dir}"
+    unless_dir "${target_dir}"
+}
