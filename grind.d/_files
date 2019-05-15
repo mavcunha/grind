@@ -61,15 +61,15 @@ function __assoc_array_to_string() {
 # Replace tokens in file using sed
 function file_replace() {
   local target="${1}"
-  local -n replace="${2}"
-  log "file_replace: target=${target} replace=($(__assoc_array_to_string replace))"
+  local -n __replace_tokens="${2}"
+  log "file_replace: target=${target} replace=($(__assoc_array_to_string __replace_tokens))"
   _file_exists "${target}"
 
-  sample_key=(${!replace[@]})
+  sample_key=(${!__replace_tokens[@]})
   [[ -n ${sample_key} ]] || error "Missing at least one replacement definition"
 
-  for k in ${!replace[@]}; do
-    sed_commands="${sed_commands}-e 's#${k}#${replace[${k}]}#g' "
+  for k in ${!__replace_tokens[@]}; do
+    sed_commands="${sed_commands}-e 's#${k}#${__replace_tokens[${k}]}#g' "
   done
 
   log "file_replace: run sed if '${sample_key}' is found in ${target}"
