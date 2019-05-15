@@ -3,8 +3,8 @@ SUBCOMMAND_DESC="Library to interact with github"
 SUBCOMMAND_HELP=$(cat <<EOH
 Functions:
 
-github USER/REPO into: DIRECTORY      Will checkout USER/REPO from github into
-                                      DIRECTORY
+github "USER/REPO"  "DIRECTORY"   Will checkout USER/REPO from github into
+                                  DIRECTORY
 
 EOH
 )
@@ -12,13 +12,12 @@ EOH
 GITHUB_URL="https://github.com"
 
 function github() {
-  [[ -z ${1} || ! ${1} =~ / ]]       && error "Missing user/repository argument\n"
-  [[ -n ${2} && ! ${2} =~ ^into:$ ]] && error "Missing to: keyword\n"
-  [[ -d ${3} ]]                      || error "${3} must be a directory\n"
+  [[ -z ${1} || ! ${1} =~ / ]] && error "Missing user/repository argument\n"
+  [[ -d ${2} ]] || error "${3} must be a directory\n"
 
   local user_repo=(${1//\// })
   local repository="${GITHUB_URL}/${1}.git"
-  local target_dir="${3}/${user_repo[1]}"
+  local target_dir="${2}/${user_repo[1]}"
 
   do_run "git clone ${repository} ${target_dir}"
     unless_dir "${target_dir}"
