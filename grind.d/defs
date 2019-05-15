@@ -4,29 +4,31 @@ SUBCOMMAND_DESC="Inspect definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
 
-list        List all definitions, not only those
-            which apply to this machine.
+list                  List all definitions, not only those
+                      which apply to this machine.
 
-show DEF    Show the contents of a definition, where
-            DEF is the definition name, example: global/utilities
+show DEF              Show the contents of a definition, where
+                      DEF is the definition name, example: global/utilities
 
-update      Will run a "git pull --ff-only" on GRIND_DEF_DIR only if
-            GRIND_DEF_DIR != ROOT_DIR/definitions which means it
-            only will act if your definitions directory is an
-            external directory to grind's directory.
+update                Will run a "git pull --ff-only" on GRIND_DEF_DIR only if
+                      GRIND_DEF_DIR != ROOT_DIR/definitions which means it
+                      only will act if your definitions directory is an
+                      external directory to grind's directory.
 
-find TERM   Will search for TERM in all definitions on GRIND_DEF_DIR.
-            TERM can also be a regular expression.
+find TERM             Will search for TERM in all definitions on GRIND_DEF_DIR.
+                      TERM can also be a regular expression.
 
-link DEF    Will create, if not existent, a link of DEF to the current
-            machine. Example 'grind defs link singles/test' will enable
-            the definition 'test' to run specifically for this machine.
-            This is to provide an 'enable/disable' mechanism for definitions.
+link DEF [MACHINE]    Will create, if not existent, a link of DEF to the current
+                      machine. Example 'grind defs link singles/test' will enable
+                      the definition 'test' to run specifically for this machine.
+                      This is to provide an 'enable/disable' mechanism for definitions.
+                      By default MACHINE is the current machine where grind is running,
+                      but it can specified if altering configurations of other machines.
 
-unlink DEF  Will remove a link to a definition for this machine. DEF
-            should be the name of the defintion to be 'unliked' and it
-            cannot be something else other than a link. Also, see the
-            'link' description.
+unlink DEF [MACHINE]  Will remove a link to a definition for this machine. DEF
+                      should be the name of the defintion to be 'unliked' and it
+                      cannot be something else other than a link. Also, see the
+                      'link' description.
 
 EOH
 )
@@ -69,19 +71,20 @@ case ${1} in
   link)
     def="${2}"
     [[ -n "${def}" ]] || error "Missing DEFINITION to link to this machine.\n"
+    machine="${3:-${GRIND_MACHINE_NAME}}"
 
     log "Check if definition exist: ${GRIND_DEF_DIR}/${def}"
     [[ -e "${GRIND_DEF_DIR}/${def}" ]] || error "Definition '${def}' not found.\n"
 
-    in_cyan "Linking ${def} to ${GRIND_MACHINE_NAME}\n"
+    in_cyan "Linking ${def} to ${machine}\n"
 
     defname=${def##*/}
-    defmachine=${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}
+    defmachine=${GRIND_DEF_DIR}/machines/${machine}
     relative=$(perl -e 'use File::Spec; print File::Spec->abs2rel(@ARGV) . "\n"' ${GRIND_DEF_DIR} ${defmachine})
 
     log "relative path calculated as ${relative}"
 
-    (cd ${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME} || \
+    (cd ${GRIND_DEF_DIR}/machines/${machine} || \
       error "Failed to change into machine def dir.\n"
       log "ln -s ${relative}/${def} ${defname}"
       ln -s ${relative}/${def} ${defname}
@@ -91,10 +94,11 @@ case ${1} in
     def="${2}"
     log "init unlink def: ${def}"
     [[ -n "${def}" ]] || error "Missing DEFINITION to unlink from this machine.\n"
+    machine="${3:-${GRIND_MACHINE_NAME}}"
 
-    in_cyan "Unlinking ${def} from ${GRIND_MACHINE_NAME}\n"
+    in_cyan "Unlinking ${def} from ${machine}\n"
 
-    target_def="${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}/${def}"
+    target_def="${GRIND_DEF_DIR}/machines/${machine}/${def}"
     log "target_def: ${target_def}"
 
     [[ -L ${target_def} ]] && rm -f ${target_def} || error "${def} not found or not a link.\n"
