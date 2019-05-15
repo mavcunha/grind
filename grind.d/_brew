@@ -28,7 +28,7 @@ function _brew_cask_installed() {
 
 function _brew_tap_installed() {
   TAP_INSTALLED=${TAP_INSTALLED:-$(brew tap)}
-  log "brew_tap: ${TAP_INSTALLED}"
+  log "brew_tap_list: ${TAP_INSTALLED}"
   grep -qE "^${1}$" <(echo "${TAP_INSTALLED}")
 }
 
@@ -52,5 +52,5 @@ function brew_tap() {
   local tap="${1}"
   log "brew_tap: ${tap}"
   do_run "brew tap ${tap}"
-    unless "_brew_cask_installed '${tap}'"
+    unless "_brew_tap_installed '${tap}'"
 }
