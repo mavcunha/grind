@@ -9,18 +9,30 @@ files, you do not need to give the full path.
 
 Functions:
 
-file ORIG DEST        Will copy the file from GRIND_DEF_DIR/files/ORIG
-                      to DEST if DEST doesn't exist.
+file ORIG DEST                       Will copy the file from GRIND_DEF_DIR/files/ORIG
+                                     to DEST if DEST doesn't exist.
 
-file_force ORIG DEST  Will copy the file from GRIND_DEF_DIR/files/ORIG to
-                      DEST even if it already exists.
+file_force ORIG DEST                 Will copy the file from GRIND_DEF_DIR/files/ORIG to
+                                     DEST even if it already exists.
 
-dir ORIG DEST         Will copy all contents from GRIND_DEF_DIR/files/ORIG to
-                      DEST. ORIG and DEST must both be directories.
+file_replace TARGET ASSOC_ARRAY      Will use ASSOC_ARRAY to replace tokens found in TARGET.
+                                     Example:
+                                         declare -Ax tokens=([NAME]='John' [AGE]='31')
+                                         file_replace "/path/to/my/file" tokens
 
-dir_force ORIG DEST   Will copy all contents from GRIND_DEF_DIR/files/ORIG to
-                      DEST overwriting existing files. ORIG and DEST must both
-                      be directories.
+                                     This will replace any occurence of NAME for John and
+                                     AGE for 31 in the file. The keys of ASSOC_ARRAY can
+                                     be extended regular expressions. This function will
+                                     draw a random key from ASSOC_ARRAY and check if exists
+                                     in TARGET, if does not it will skip the execution on
+                                     the assumption it ran already.
+
+dir ORIG DEST                        Will copy all contents from GRIND_DEF_DIR/files/ORIG to
+                                     DEST. ORIG and DEST must both be directories.
+
+dir_force ORIG DEST                  Will copy all contents from GRIND_DEF_DIR/files/ORIG to
+                                     DEST overwriting existing files. ORIG and DEST must both
+                                     be directories.
 EOH
 )
 
@@ -29,13 +41,40 @@ __FILES_DEF_DIR="${GRIND_DEF_DIR}/files"
 function _file_exists () {
   local file="${1}"
   log "checking if '${file}' exists first."
-  [[ -f "${file}" ]] || error "Cannot find ${file} file."
+  [[ -f "${file}" ]] || error "Cannot find file ${file}"
 }
 
 function _dir_exists () {
   local dir="${1}"
   log "checking if directory '${dir}' exists"
-  [[ -d "${dir}" ]] || error "Cannot find directory ${dir}."
+  [[ -d "${dir}" ]] || error "Cannot find directory ${dir}"
+}
+
+function __assoc_array_to_string() {
+  local -n assoc_array="${1}"
+  for k in ${!assoc_array[@]}; do
+    values="${values}[${k}]=${assoc_array[${k}]} "
+  done
+  echo "${values}"
+}
+
+# Replace tokens in file using sed
+function file_replace() {
+  local target="${1}"
+  local -n replace="${2}"
+  log "file_replace: target=${target} replace=($(__assoc_array_to_string replace))"
+  _file_exists "${target}"
+
+  sample_key=(${!replace[@]})
+  [[ -n ${sample_key} ]] || error "Missing at least one replacement definition"
+
+  for k in ${!replace[@]}; do
+    sed_commands="${sed_commands}-e 's#${k}#${replace[${k}]}#g' "
+  done
+
+  log "file_replace: run sed if '${sample_key}' is found in ${target}"
+  do_run "sed -E -i '' ${sed_commands} ${target}"
+    unless "! grep -qE '${sample_key}' '${target}'"
 }
 
 # Copy file only if does not exist at destination
