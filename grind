@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MAIN_COMMAND_VERSION="0.4"
+MAIN_COMMAND_VERSION="1.0"
 
 MAIN_COMMAND=$(basename ${0})
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd)"
@@ -21,12 +21,22 @@ function log() {
   fi
 }
 
+function error() {
+  in_red "ERROR: ${1}"
+  exit 1
+}
+
+function warn() {
+  in_yellow "WARN: ${1}"
+}
+
 # warn users of outdated bash versions
 if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
-  in_yellow "WARNING: bash version is '${BASH_VERSION}'\n"
-  in_yellow "WARNING: which is less than version 4\n"
-  in_yellow "WARNING: grind can only run bootstrap with bash < 4\n"
-  in_yellow "WARNING: Please run './grind bootstrap run' to install a newer bash\n"
+  warn "bash version is '${BASH_VERSION}'\n"
+  warn "which is less than version 4\n"
+  warn "grind can only fully work on bash version >= 4\n"
+  warn "Please run './grind bootstrap run' to install it\n"
+  [[ "${1}" == "bootstrap" ]] || exit 1;
 else
   # DEBUG flag is defined as soon as possible
   DEBUG=$(eval "[[ -n \${${MAIN_COMMAND^^}_DEBUG} ]] && echo 'true' ")
@@ -109,15 +119,6 @@ function _handle_subcommand() {
     log "showing '${SUBCOMMAND}' help"
     _help
   fi
-}
-
-function error() {
-  in_red "ERROR: ${1}"
-  exit 1
-}
-
-function warn() {
-  in_yellow "WARN: ${1}"
 }
 
 function use() {

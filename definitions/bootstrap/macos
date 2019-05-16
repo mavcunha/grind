@@ -4,8 +4,6 @@
 # because they might not work until the bootstrap
 # is finished.
 
-echo "Review the file 'definitions/bootstrap/macos' and remove this line to enable it."; exit 1;
-
 set -e
 
 function _msg() {
@@ -14,7 +12,7 @@ function _msg() {
 
 function install_homebrew() {
   _msg "Installing homebrew"
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  /usr/bin/ruby -e "`curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install`"
 }
 
 function xcode_cli_installed() {
@@ -33,7 +31,7 @@ _msg "Check if XCode CLI Tools is installed"
 xcode_cli_installed || xcode_cli_install
 
 # Install Homebrew if XCode is present
-if [[ $(xcode_cli_installed) -eq 0 ]]; then
+if [[ `xcode_cli_installed` -eq 0 ]]; then
   _msg "Check if homebrew is installed"
   type -a brew &> /dev/null || install_homebrew
 fi
@@ -45,6 +43,6 @@ if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
   _msg "Bash version is too old (< 4), installing a newer version."
   brew install bash
   _msg "Please note that grind requires bash >= 4"
-  _msg "You can now run '/usr/local/bin/bash'"
+  _msg "You can now run '/usr/local/bin/bash -l'"
   _msg "And then invoke ./grind update run"
 fi

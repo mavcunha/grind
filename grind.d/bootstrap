@@ -1,14 +1,22 @@
 # vim: ft=sh
-SUBCOMMAND_DESC="Bootstrap machine"
-SUBCOMMAND_HELP=$(cat <<EOH
-Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+#
+# IMPORTANT This file should work under bash 3 which means
+# some syntax is not available:
+#
+# subshell instead of $(cmd) use `cmd`
 
-This command should can be run as a first setup for the machine,
-usually should be run only once to setup the basics necessary for
-further configuration.
+SUBCOMMAND_DESC="Bootstrap machine"
+SUBCOMMAND_HELP=`cat <<EOH
+
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
+
+This command should run as a first setup for the machine. It
+will install the basic tooling necessary for grind work.
 
 Bootstrap depends on OS type, there's a bootstrap for macOS and
-for Linux on 'definitions/bootstrap/' directory.
+for Linux on definitions/bootstrap/ directory.
+
+Available ACTIONS are:
 
 run               On macOS will install:
                   * XCode CLI tools
@@ -19,10 +27,10 @@ run               On macOS will install:
                   not implemented yet.
 
 EOH
-)
+`
 
 case ${1} in
   run)
-    . ${GRIND_DEF_DIR}/bootstrap/$(__osname)
+    . ${GRIND_DEF_DIR}/bootstrap/`__osname`
   ;;
 esac
