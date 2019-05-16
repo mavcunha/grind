@@ -24,6 +24,5 @@ function __conditional_run() {
   log "__conditional_run (forced): ${cmd}"
   __iexec "${cmd}"
   log "log ignoring run check, forced execution!"
-  __red_box 'FORCE'
-  __run
+  __run "$(__red_box 'FORCE')"
 }

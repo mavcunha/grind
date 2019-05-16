@@ -115,8 +115,9 @@ function __red_box() {
 }
 
 function __run() {
+  local msg="${1:-$(__yellow_box 'RUN')}"
   __iexec "${__GRIND_CMD_NEXT}"
-  __yellow_box 'RUN'
+  echo ${msg}
 }
 
 function __conditional_run() {
