@@ -30,6 +30,11 @@ function warn() {
   in_yellow "WARN: ${1}"
 }
 
+# grind should not run as root it is too dangerous.
+# Privileged should be asked in a definition to
+# control the scope of priviledged run.
+[[ "${EUID}" -eq 0 ]] && error "Running grind as root is not supported.\n"
+
 # warn users of outdated bash versions
 if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
   warn "bash version is '${BASH_VERSION}'\n"
@@ -49,7 +54,8 @@ if [[ $? -ne 0 ]]; then
   export PATH=${PATH}:${ROOT_DIR}
 fi
 
-# environment settings that depend on a project
+# environment, this is a point of extension and configuration
+# it should give some ability to extend grind behavior
 [[ -f ${SUBCOMMANDS_DIR}/_environment ]] && . ${SUBCOMMANDS_DIR}/_environment
 
 function _list_commands() {
