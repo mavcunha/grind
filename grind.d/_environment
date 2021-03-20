@@ -35,6 +35,22 @@ function open_file() {
   __osx && open ${file} || xdg-open ${file}
 }
 
+function file_download() {
+  local uri="${1}"
+  local file="${2}"
+  GRIND_DOWNLOAD_DIR=$(mktemp -d /tmp/grind_download.XXXXXX)
+  log "created tmpdir: ${GRIND_DOWNLOAD_DIR}"
+  /usr/bin/curl -o "${GRIND_DOWNLOAD_DIR}/${file}" -C - -L -sS --url "${uri}" || error "Error downloading file from ${uri}\n"
+  echo "${GRIND_DOWNLOAD_DIR}/${file}"
+}
+
+function safe_rm_download_dir() {
+  local dir=${GRIND_DOWNLOAD_DIR?"Missing GRIND_DOWNLOAD_DIR"}
+  log "_safe_rm ${dir}"
+  [[ -d "${dir}" && "${dir}" =~ ^/tmp/grind_download\. ]] && rm -Rf "${dir}" \
+    || warn "Directory: ${dir} does not look like a grind download directory.\n"
+}
+
 # These are defaults for configuration directory and file
 # they can be overwriten using environmental variables
 GRIND_CONF_DIR=${GRIND_CONF_DIR:-"${ROOT_DIR}/conf"}

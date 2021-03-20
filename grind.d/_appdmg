@@ -11,18 +11,8 @@ appdmg 'APPNAME' 'URI'    Will download, mount and attempt to install all .app
 EOH
 )
 
-CURL_BIN='/usr/bin/curl'
 DITTO_BIN='/usr/bin/ditto'
 HDIUTIL_BIN='/usr/bin/hdiutil'
-
-function _appdmg_download() {
-  local uri="${1}"
-  local dmg="${2}"
-  GRIND_DOWNLOAD_DIR=$(mktemp -d /tmp/grind_download.XXXXXX)
-  log "created tmpdir: ${GRIND_DOWNLOAD_DIR}"
-  ${CURL_BIN} -o "${GRIND_DOWNLOAD_DIR}/${dmg}" -C - -L -sS --url "${uri}" || error "Error downloading dmg file from ${uri}\n"
-  GRIND_DOWNLOADED_FILE="${GRIND_DOWNLOAD_DIR}/${dmg}"
-}
 
 function _appdmg_mount() {
   local file="${1}"
@@ -34,13 +24,6 @@ function _appdmg_mount() {
     xpath "//key[.='mount-point']/following-sibling::*[1]/text()" 2>/dev/null)
 }
 
-function _safe_rm() {
-  local dir="${1}"
-  log "_safe_rm ${dir}"
-  [[ "${dir}" =~ ^/tmp/grind_download\. ]] && rm -Rf "${dir}" \
-    || warn "Directory: ${dir} does not look like a grind download directory.\n"
-}
-
 function _appdmg_teardown() {
   log "_appdmg_teardown"
 
@@ -48,7 +31,7 @@ function _appdmg_teardown() {
   ${HDIUTIL_BIN} eject ${GRIND_HDIUTIL_MOUNT} &> /dev/null || warn "Problems unmounting ${GRIND_HDIUTIL_MOUNT}\n"
 
   log "removing temporary directory ${GRIND_DOWNLOAD_DIR}"
-  _safe_rm "${GRIND_DOWNLOAD_DIR}"
+  safe_rm_download_dir
 }
 
 function _appdmg_install() {
@@ -65,7 +48,7 @@ function _appdmg_process() {
   local dmg=${uri##*/}
 
   log "init download of dmg: ${dmg} from uri: ${uri}"
-  _appdmg_download "${uri}" "${dmg}"
+  GRIND_DOWNLOAD_FILE = $(file_download "${uri}" "${dmg}")
 
   log "mounting: ${GRIND_DOWNLOADED_FILE}"
   _appdmg_mount "${GRIND_DOWNLOADED_FILE}"
