@@ -21,7 +21,7 @@ function _brew_pkg_installed() {
 }
 
 function _brew_cask_installed() {
-  CASK_INSTALLED=${CASK_INSTALLED:-$(brew cask list)}
+  CASK_INSTALLED=${CASK_INSTALLED:-$(brew list --cask)}
   log "brew_casks_list: ${CASK_INSTALLED}"
   grep -qE "^${1}$" <(echo "${CASK_INSTALLED}")
 }
@@ -44,7 +44,7 @@ function brew_cask() {
   local cask="${1}"
   local short=${cask##*/}
   log "brew_cask: ${cask} shortname: ${short}"
-  do_run "brew cask install ${cask}"
+  do_run "brew install --cask ${cask}"
     unless "_brew_cask_installed '${short}'"
 }
 
