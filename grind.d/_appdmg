@@ -48,7 +48,7 @@ function _appdmg_process() {
   local dmg=${uri##*/}
 
   log "init download of dmg: ${dmg} from uri: ${uri}"
-  GRIND_DOWNLOAD_FILE = $(file_download "${uri}" "${dmg}")
+  GRIND_DOWNLOADED_FILE=$(file_download "${uri}" "${dmg}")
 
   log "mounting: ${GRIND_DOWNLOADED_FILE}"
   _appdmg_mount "${GRIND_DOWNLOADED_FILE}"

@@ -13,7 +13,7 @@ GITHUB_URL="https://github.com"
 
 function github() {
   [[ -z ${1} || ! ${1} =~ / ]] && error "Missing user/repository argument\n"
-  [[ -d ${2} ]] || error "${3} must be a directory\n"
+  [[ -d ${2} ]] || error "${2} must be a directory\n"
 
   local user_repo=(${1//\// })
   local repository="${GITHUB_URL}/${1}.git"

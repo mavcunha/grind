@@ -41,6 +41,7 @@ function file_download() {
   GRIND_DOWNLOAD_DIR=$(mktemp -d /tmp/grind_download.XXXXXX)
   log "created tmpdir: ${GRIND_DOWNLOAD_DIR}"
   /usr/bin/curl -o "${GRIND_DOWNLOAD_DIR}/${file}" -C - -L -sS --url "${uri}" || error "Error downloading file from ${uri}\n"
+  log "downloaded: ${GRIND_DOWNLOAD_DIR}/${file}"
   echo "${GRIND_DOWNLOAD_DIR}/${file}"
 }
 
