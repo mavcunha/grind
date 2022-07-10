@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MAIN_COMMAND_VERSION="1.0"
+MAIN_COMMAND_VERSION="1.1"
 
 MAIN_COMMAND=$(basename ${0})
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd)"
