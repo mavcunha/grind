@@ -38,17 +38,23 @@ function open_file() {
 function file_download() {
   local uri="${1}"
   local file="${2}"
-  GRIND_DOWNLOAD_DIR=$(mktemp -d /tmp/grind_download.XXXXXX)
-  log "created tmpdir: ${GRIND_DOWNLOAD_DIR}"
-  /usr/bin/curl -o "${GRIND_DOWNLOAD_DIR}/${file}" -C - -L -sS --url "${uri}" || error "Error downloading file from ${uri}\n"
-  log "downloaded: ${GRIND_DOWNLOAD_DIR}/${file}"
-  echo "${GRIND_DOWNLOAD_DIR}/${file}"
+  local download_dir=$(mktemp -d /tmp/grind_download.XXXXXX)
+  log "created tmpdir: ${download_dir}"
+  /usr/bin/curl -o "${download_dir}/${file}" -C - -L -sS --url "${uri}" || error "Error downloading file from ${uri}\n"
+  log "downloaded: ${download_dir}/${file}"
+  echo "${download_dir}/${file}"
 }
 
 function safe_rm_download_dir() {
-  local dir=${GRIND_DOWNLOAD_DIR?"Missing GRIND_DOWNLOAD_DIR"}
-  log "_safe_rm ${dir}"
-  [[ -d "${dir}" && "${dir}" =~ ^/tmp/grind_download\. ]] && rm -Rf "${dir}" \
+  local file=${1?"Missing download directory"}
+  local dir=$(dirname ${file})
+
+  log "_safe_rm_file: ${file}"
+  [[ -f "${file}" ]] && rm -f "${file}" \
+    || warn "Could not remove file: ${file}"
+
+  log "_safe_rm_dir: ${dir}"
+  [[ -d "${dir}" && "${dir}" =~ ^/tmp/grind_download\. ]] && rmdir "${dir}" \
     || warn "Directory: ${dir} does not look like a grind download directory.\n"
 }
 
