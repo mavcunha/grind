@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 SUBCOMMAND_DESC="Library for run and run checks"
 SUBCOMMAND_HELP=$(cat <<EOH
 
@@ -65,10 +65,10 @@ __conditional_run CMD REG      Will execute CMD through __iexec and check the ex
 EOH
 )
 
-declare -gA __GRIND_EXECS
-declare -g  __GRIND_CMD_EXIT_CODE
-declare -g  __GRIND_CMD_NEXT
-declare -g  __GRIND_CMD_LAST
+typeset -gA __GRIND_EXECS
+typeset -g  __GRIND_CMD_NEXT
+typeset -g  __GRIND_CMD_LAST
+integer -g  __GRIND_CMD_EXIT_CODE
 
 function __strip_spaces() {
   echo ${1// /}

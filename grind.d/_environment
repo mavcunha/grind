@@ -1,4 +1,4 @@
-# vim: ft=sh sw=2 ts=2 expandtab
+# vim: ft=zsh sw=2 ts=2 expandtab
 # This file is loaded first and anything defined here
 # will be available to all subcommands.
 # This is a valid bash file and will execute

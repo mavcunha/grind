@@ -47,14 +47,17 @@ function _list_recur() {
 
 function _call() {
   local func="${1}"
-  local ddirs=("${!2}")
+  local ddirs=(${(P)2})
   for d in ${ddirs[@]}; do
     log "_call ${func} on ${d}"
     ${func} ${d}
   done
 }
 
-def_dirs=(
+# these are two possible locations for 
+# defitions, global definitions and this
+# machine definitions
+typeset -a def_dirs=(
   "${GRIND_DEF_DIR}/global"
   "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}")
 
@@ -62,16 +65,16 @@ def_dirs=(
 case ${1} in
   run)
     in_cyan "Update run\n"
-    _call _load_recur def_dirs[@]
+    _call _load_recur def_dirs
   ;;
   list)
     in_cyan "Update listing definitions\n"
-    _call _list_recur def_dirs[@]
+    _call _list_recur def_dirs
   ;;
   dry)
     in_cyan "Update using dry run\n"
     use "core-dryrun"
-    _call _load_recur def_dirs[@]
+    _call _load_recur def_dirs
   ;;
   force)
     in_cyan "Update using force\n"
@@ -83,7 +86,7 @@ case ${1} in
 
     if [[ "$key" == "" ]]; then
       use "core-force"
-      _call _load_recur def_dirs[@]
+      _call _load_recur def_dirs
     else
       in_yellow "\nCanceled.\n"
     fi

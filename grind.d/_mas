@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 SUBCOMMAND_DESC="Library for App Store (mas) definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 Functions:
@@ -25,9 +25,11 @@ brew_pkg 'mas'
 EOH
 )
 
+typeset -g _MAS_APPS_INSTALLED
+
 function _mas_is_installed() {
-  MAS_APPS_INSTALLED=${MAS_APPS_INSTALLED:-$(mas list)}
-  grep -q "${1}" <(echo "${MAS_APPS_INSTALLED}" )
+  _MAS_APPS_INSTALLED="${_MAS_APPS_INSTALLED:-$(mas list)}"
+  grep -q "${1}" <(echo "${_MAS_APPS_INSTALLED}" )
 }
 
 function _mas_not_available() {

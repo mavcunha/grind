@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 SUBCOMMAND_DESC="Library to interact with github"
 SUBCOMMAND_HELP=$(cat <<EOH
 Functions:
@@ -12,12 +12,15 @@ EOH
 GITHUB_URL="https://github.com"
 
 function github() {
-  [[ -z ${1} || ! ${1} =~ / ]] && error "Missing user/repository argument\n"
+  [[ -z ${1} || ! ${1} =~ / ]] && error "Missing 'user/repository' argument\n"
   [[ -d ${2} ]] || error "${2} must be a directory\n"
 
-  local user_repo=(${1//\// })
+  local user_repo=(${(s:/:)1})
+  log "user: ${user_repo[1]} repo: ${user_repo[2]}" 
   local repository="${GITHUB_URL}/${1}.git"
-  local target_dir="${2}/${user_repo[1]}"
+  log "repository: ${repository}"
+  local target_dir="${2}/${user_repo[2]}"
+  log "target_dir: ${target_dir}"
 
   do_run "git clone ${repository} ${target_dir}"
     unless_dir "${target_dir}"

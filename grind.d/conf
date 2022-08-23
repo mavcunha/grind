@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 SUBCOMMAND_DESC="Grind's configuration"
 SUBCOMMAND_HELP=$(cat <<EOH
 
@@ -9,14 +9,14 @@ EOH
 
 function display_conf() {
   local conf="${1}"
-  declare "value=${!conf}"
+  declare "value=${(P)conf}"
   in_cyan "${conf}="
   in_yellow "${value}\n"
 }
 
 case ${1} in
   show)
-    echo "grind configurations:"
+    in_green "grind configurations:\n"
     display_conf "GRIND_CONF_DIR"
     display_conf "GRIND_CONF_FILE"
     display_conf "GRIND_DEF_DIR"

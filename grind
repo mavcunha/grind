@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-MAIN_COMMAND_VERSION="1.1"
+readonly MAIN_COMMAND_VERSION="2.0"
 
-MAIN_COMMAND=$(basename ${0})
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd)"
-SUBCOMMANDS_DIR=${ROOT_DIR}/${MAIN_COMMAND}.d
+readonly MAIN_COMMAND=${0:t}
+readonly ROOT_DIR=${0:a:h}
+readonly SUBCOMMANDS_DIR=${ROOT_DIR}/${MAIN_COMMAND}.d
 
 function _color()     { tput -Txterm setaf ${1}; echo -ne ${2}; tput -Txterm sgr0; }
 function in_red()     { _color 1 "${1}"; } # use for failures
@@ -30,22 +30,16 @@ function warn() {
   in_yellow "WARN: ${1}"
 }
 
+# accept '-d' as a debug flag
+zparseopts -D -E - d=DEBUG -debug=DEBUG
+
+# also accept GRIND_DEBUG=true as debug
+[[ -z ${DEBUG} ]] && DEBUG=$(eval "[[ -n \${${(U)MAIN_COMMAND}_DEBUG} ]] && echo 'true' ")
+
 # grind should not run as root it is too dangerous.
 # Privileged should be asked in a definition to
 # control the scope of priviledged run.
 [[ "${EUID}" -eq 0 ]] && error "Running grind as root is not supported.\n"
-
-# warn users of outdated bash versions
-if [[ ${BASH_VERSION%%.*} -lt 4 ]]; then
-  warn "bash version is '${BASH_VERSION}'\n"
-  warn "which is less than version 4\n"
-  warn "grind can only fully work on bash version >= 4\n"
-  warn "Please run './grind bootstrap run' to install it\n"
-  [[ "${1}" == "bootstrap" ]] || exit 1;
-else
-  # DEBUG flag is defined as soon as possible
-  DEBUG=$(eval "[[ -n \${${MAIN_COMMAND^^}_DEBUG} ]] && echo 'true' ")
-fi
 
 # add itself to PATH if needed
 log "check if ${MAIN_COMMAND} is on PATH"
@@ -60,11 +54,13 @@ fi
 
 function _list_commands() {
   cat <<EOU
-  usage: ${MAIN_COMMAND} [-h|-?|--help|help] [-l] [--version] [SUBCOMMAND]
+  usage: ${MAIN_COMMAND} [-h|--help|help] [-l|--list] [-V|--version] [SUBCOMMAND]
 
-  -h|-?|--help|help            Show this help message
-  -l                           List available libraries
-  --version                    Display current version
+  -h|--help|help               Show this help message
+  -l|--list                    List available libraries
+  -V|--version                 Display current version
+  -d|--debug                   Enable debug mode, setting GRIND_DEBUG env 
+                               variable as the same effect
 
   Subcommands available ('${MAIN_COMMAND} SUBCOMMAND' for usage):
 
@@ -119,7 +115,7 @@ function _handle_subcommand() {
   local ACTION="${@}"
 
   log "running ${SUBCOMMANDS_DIR}/${SUBCOMMAND} ${ACTION} "
-  . "${SUBCOMMANDS_DIR}/${SUBCOMMAND}" ${ACTION}
+  . "${SUBCOMMANDS_DIR}/${SUBCOMMAND}" ${=ACTION}
 
   if [[ "${ACTION}" == "help" || -z "${ACTION}" ]]; then
     log "showing '${SUBCOMMAND}' help"
@@ -135,15 +131,15 @@ function use() {
 _arg_subcmd=${1}
 log "got argument '${_arg_subcmd}'"
 case ${_arg_subcmd} in
-  -l)
+  -l|--list)
     log 'showing available libs'
     _list_libraries
   ;;
-  help|-h|-?|--help|'')
+  help|-h|--help|'')
     log 'help or no argument was given'
     _list_commands
   ;;
-  --version)
+  -V|--version)
     echo "${MAIN_COMMAND} ${MAIN_COMMAND_VERSION}"
   ;;
   *)

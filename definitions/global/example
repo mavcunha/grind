@@ -7,8 +7,8 @@ run "# Specific definitions should go into machines/MACHINE_NAME"
 do_run "echo 'Since the file does not exist, this should be called. A RUN message appears.'"
   unless_file "/this/file/most/likely/does/not/exist"
 
-do_run "echo '${USER} things inside do_run and are actually bash.'"
- if_ "[[ -f /bin/bash ]]"
+do_run "echo '${USER} things inside do_run and are actually zsh.'"
+ if_ "[[ -f /bin/zsh ]]"
 
 function functions_too_can_be_used() {
   cat <<EOM
@@ -30,8 +30,8 @@ do_run "functions_too_can_be_used"
 do_run "echo 'This should not run, a SKIP message should appear'"
  unless_file "${0}"
 
-do_run "echo 'Should SKIP as bash should be running.'"
-  unless_running 'bash'
+do_run "echo 'Should SKIP as zsh should be running.'"
+  unless_running 'zsh'
 
 do_run "echo 'Should RUN as process blahblah probably is not running.'"
   unless_running 'blahblah'

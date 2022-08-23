@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 SUBCOMMAND_DESC="Library for homebrew definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 Functions:
@@ -14,22 +14,29 @@ brew_cask CASK    brew_cask "cask_name"
 EOH
 )
 
+# we should keep the list of installed packages
+# throughout the run to avoid executing 
+# 'brew list' over and over again
+typeset -g _BREW_PKG_INSTALLED
+typeset -g _BREW_CASK_INSTALLED
+typeset -g _BREW_TAP_INSTALLED
+
 function _brew_pkg_installed() {
-  PKG_INSTALLED=${PKG_INSTALLED:-$(brew list)}
-  log "brew_packages_list: ${PKG_INSTALLED}"
-  grep -qE "^${1}$" <(echo "${PKG_INSTALLED}")
+  _BREW_PKG_INSTALLED="${_BREW_PKG_INSTALLED:-$(brew list)}"
+  log "brew_packages_list: ${_BREW_PKG_INSTALLED}"
+  grep -qE "^${1}$" <(echo "${_BREW_PKG_INSTALLED}")
 }
 
 function _brew_cask_installed() {
-  CASK_INSTALLED=${CASK_INSTALLED:-$(brew list --cask)}
-  log "brew_casks_list: ${CASK_INSTALLED}"
-  grep -qE "^${1}$" <(echo "${CASK_INSTALLED}")
+  _BREW_CASK_INSTALLED="${_BREW_CASK_INSTALLED:-$(brew list --cask)}"
+  log "brew_casks_list: ${_BREW_CASK_INSTALLED}"
+  grep -qE "^${1}$" <(echo "${_BREW_CASK_INSTALLED}")
 }
 
 function _brew_tap_installed() {
-  TAP_INSTALLED=${TAP_INSTALLED:-$(brew tap)}
-  log "brew_tap_list: ${TAP_INSTALLED}"
-  grep -qE "^${1}$" <(echo "${TAP_INSTALLED}")
+  _BREW_TAP_INSTALLED="${_BREW_TAP_INSTALLED:-$(brew tap)}"
+  log "brew_tap_list: ${_BREW_TAP_INSTALLED}"
+  grep -qE "^${1}$" <(echo "${_BREW_TAP_INSTALLED}")
 }
 
 function brew_pkg() {
