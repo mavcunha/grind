@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 SUBCOMMAND_DESC="Library for file definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 
@@ -11,6 +11,9 @@ Functions:
 
 file ORIG DEST                       Will copy the file from GRIND_DEF_DIR/files/ORIG
                                      to DEST if DEST doesn't exist.
+
+link ORIG DEST                       Will create a soft link from ORIG to DEST if DEST
+                                     doesn't exist.
 
 file_force ORIG DEST                 Will copy the file from GRIND_DEF_DIR/files/ORIG to
                                      DEST even if it already exists.
@@ -51,8 +54,8 @@ function _dir_exists () {
 }
 
 function __assoc_array_to_string() {
-  local -n assoc_array="${1}"
-  for k in ${!assoc_array[@]}; do
+  local -A assoc_array=(${(Pkv)1})
+  for k in ${(k)assoc_array}; do
     values="${values}[${k}]=${assoc_array[${k}]} "
   done
   echo "${values}"
@@ -61,14 +64,14 @@ function __assoc_array_to_string() {
 # Replace tokens in file using sed
 function file_replace() {
   local target="${1}"
-  local -n __replace_tokens="${2}"
+  local -A __replace_tokens=(${(Pkv)2})
   log "file_replace: target=${target} replace=($(__assoc_array_to_string __replace_tokens))"
   _file_exists "${target}"
 
-  sample_key=(${!__replace_tokens[@]})
+  sample_key=${${(k)__replace_tokens}[1]}
   [[ -n ${sample_key} ]] || error "Missing at least one replacement definition"
 
-  for k in ${!__replace_tokens[@]}; do
+  for k in ${(k)__replace_tokens}; do
     sed_commands="${sed_commands}-e 's#${k}#${__replace_tokens[${k}]}#g' "
   done
 
@@ -84,6 +87,15 @@ function file() {
   log "file: orig=${orig} dest=${dest}"
   _file_exists "${__FILES_DEF_DIR}/${orig}"
   do_run "cp -v '${__FILES_DEF_DIR}/${orig}' '${dest}'"
+    unless_file "${dest}"
+}
+
+function link() {
+  local orig="${1}"
+  local dest="${2}"
+  log "link: orig=${orig} dest=${dest}"
+  _file_exists "${__FILES_DEF_DIR}/${orig}"
+  do_run "ln -s '${__FILES_DEF_DIR}/${orig}' '${dest}'"
     unless_file "${dest}"
 }
 
