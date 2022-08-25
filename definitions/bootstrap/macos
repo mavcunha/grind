@@ -33,5 +33,5 @@ xcode_cli_installed || xcode_cli_install
 # Install Homebrew if XCode is present
 if [[ `xcode_cli_installed` -eq 0 ]]; then
   _msg "Check if homebrew is installed"
-  type -a brew &> /dev/null || install_homebrew
+  whence -p brew &> /dev/null || install_homebrew
 fi

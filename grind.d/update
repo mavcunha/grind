@@ -80,11 +80,8 @@ case ${1} in
     in_cyan "Update using force\n"
     warn "Force will run definitions regardless of its run checks results\n"
     warn "This is potentially dangerous\n"
-    warn "Press return to continue any other key to cancel..."
 
-    read -n1 -s key
-
-    if [[ "$key" == "" ]]; then
+    if read -q "confirm?Press Y/y to confirm, other key to cancel: "; then
       use "core-force"
       _call _load_recur def_dirs
     else
