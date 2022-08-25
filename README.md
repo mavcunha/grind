@@ -16,7 +16,7 @@ explaining why I created `grind`.
 
 `grind` provides a `bootstrap` command for a pre-setup for grind itself:
 
-```bash
+```zsh
 grind bootstrap run
 ```
 
@@ -39,7 +39,7 @@ Here's an example of a definition on macOS:
 
 This definition will install `git` through *homebrew* if is not already installed.
 
-```bash
+```zsh
 use "brew"
 
 brew_pkg "git"
@@ -50,32 +50,27 @@ brew_pkg "git"
 This definition will install `vim` thorugh *homebrew* if is not already installed, and
 configure some plugins and settings for `vim`.
 
-```bash
-use "brew"
+```zsh
+use "files"
 
-brew_pkg "vim"
+local __ZSHRC="${HOME}/.zshrc"
 
-do_run "mkdir -p ${HOME}/.vim/bundle"
-  unless_dir "${HOME}/.vim/bundle"
-
-function install_bundles() {
-  local bundles=("${!1}")
-  for b in ${bundles[@]}; do
-    local repo=${b}
-    local target=${b#*/}
-
-    do_run "git clone https://github.com/${repo}.git ${HOME}/.vim/bundle/${target}"
-      unless_dir "${HOME}/.vim/bundle/${target}"
-  done
+function is_file_managed() {
+  [[ -f ${__ZSHRC} ]] && grep -q "grind:managed" "${__ZSHRC}" || true
 }
 
-vim_bundles=(
-  'tpope/vim-pathogen'
-  'tpope/vim-surround'
-  'tpope/vim-unimpaired'
-  'vim-ruby/vim-ruby')
+do_run "mv ${__ZSHRC} ${__ZSHRC}.bak.$$"
+  unless "is_file_managed"
 
-install_bundles vim_bundles[@]
+file "shell/zshrc" "${__ZSHRC}"
+
+# ensure grind variables are defined in zshrc
+# so you do not have to export them manually
+typeset -A tokens=(
+  [__GRIND_DEF_DIR]="${GRIND_DEF_DIR}"
+  [__GRIND_CONF_DIR]="${GRIND_DEF_DIR}"
+)
+file_replace "${__ZSHRC}" tokens
 ```
 
 ### Definitions directory organization
