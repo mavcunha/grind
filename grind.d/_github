@@ -6,8 +6,9 @@ Functions:
 github "REPO"  "DIRECTORY"        Will checkout REPO from github into
                                   DIRECTORY. REPO can be defined in two forms,
                                   abbreviated as 'user/repo' or fully qualified
-                                  like 'http://github.com/user/repo.git' or
-                                  'ssh://git@github.com:user/repo.git'.
+                                  like 'https://github.com/user/repo.git',
+                                  'git@github.com:user/repo.git' or
+                                  'ssh://git@github.com:user/repo.git'
 
                                   In fact this allows you to clone from other
                                   servers not only github, although it would
@@ -21,11 +22,11 @@ GITHUB_URL="https://github.com"
 function __github_resolve_repo_url() {
   local repo="${1}"
 
-  if [[ ${repo} =~ ^(http|ssh) ]]; then
+  if [[ ${repo} =~ ^(http|ssh|git@) ]]; then
     log "fully qualified URL detected: ${repo}"
     repository=${repo}
   else
-    log "partial URL detected: ${repo}"
+    log "partial URL detected: ${repo}, assuming prefix is ${GITHUB_URL}"
     local user_repo=(${(s:/:)repo})
     log "user: ${user_repo[1]} repo: ${user_repo[2]}" 
     repository="${GITHUB_URL}/${1}"
