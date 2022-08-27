@@ -12,11 +12,14 @@ Functions:
 file ORIG DEST                       Will copy the file from GRIND_DEF_DIR/files/ORIG
                                      to DEST if DEST doesn't exist.
 
+file_force ORIG DEST                 Will copy the file from GRIND_DEF_DIR/files/ORIG to
+                                     DEST even if it already exists.
+
 link ORIG DEST                       Will create a soft link from ORIG to DEST if DEST
                                      doesn't exist.
 
-file_force ORIG DEST                 Will copy the file from GRIND_DEF_DIR/files/ORIG to
-                                     DEST even if it already exists.
+link_force ORIG DEST                 Will create a soft link from ORIG to DEST regardless
+                                     if DEST already is a link or a file.
 
 file_replace TARGET ASSOC_ARRAY      Will use ASSOC_ARRAY to replace tokens found in TARGET.
                                      Example:
@@ -90,15 +93,6 @@ function file() {
     unless_file "${dest}"
 }
 
-function link() {
-  local orig="${1}"
-  local dest="${2}"
-  log "link: orig=${orig} dest=${dest}"
-  _file_exists "${__FILES_DEF_DIR}/${orig}"
-  do_run "ln -s '${__FILES_DEF_DIR}/${orig}' '${dest}'"
-    unless_file "${dest}"
-}
-
 # Copy file without worrying if it exists at destination
 function file_force() {
   local orig="${1}"
@@ -106,6 +100,25 @@ function file_force() {
   log "file_force: orig=${orig} dest=${dest}"
   _file_exists "${__FILES_DEF_DIR}/${orig}"
   run "cp -vf '${__FILES_DEF_DIR}/${orig}' '${dest}'"
+}
+
+# Link orig to dest unless dest is already a link
+function link() {
+  local orig="${1}"
+  local dest="${2}"
+  log "link: orig=${orig} dest=${dest}"
+  _file_exists "${__FILES_DEF_DIR}/${orig}"
+  do_run "ln -s '${__FILES_DEF_DIR}/${orig}' '${dest}'"
+    unless_link "${dest}"
+}
+
+# Link from orig to dest regardless if dest already
+function link_force() {
+  local orig="${1}"
+  local dest="${2}"
+  log "link: orig=${orig} dest=${dest}"
+  _file_exists "${__FILES_DEF_DIR}/${orig}"
+  run "ln -fvs '${__FILES_DEF_DIR}/${orig}' '${dest}'"
 }
 
 # Copy contents of dir orig into dir dest

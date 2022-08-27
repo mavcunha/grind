@@ -5,10 +5,12 @@ SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
 
 list                  List all definitions, not only those
-                      which apply to this machine.
+                      which apply to this machine. To list
+                      only the defintions that apply to this
+                      machine use 'grind update list'
 
 show DEF              Show the contents of a definition, where
-                      DEF is the definition name, example: global/utilities
+                      DEF is the definition name, example: def/git
 
 update                Will run a "git pull --ff-only" on GRIND_DEF_DIR only if
                       GRIND_DEF_DIR != ROOT_DIR/definitions which means it
@@ -24,6 +26,8 @@ link DEF [MACHINE]    Will create, if not existent, a link of DEF to the current
                       This is to provide an 'enable/disable' mechanism for definitions.
                       By default MACHINE is the current machine where grind is running,
                       but it can specified if altering configurations of other machines.
+                      The current machine name can be set through GRIND_MACHINE_NAME
+                      environment variable and inspected by 'grind conf show'
 
 unlink DEF [MACHINE]  Will remove a link to a definition for this machine. DEF
                       should be the name of the defintion to be 'unliked' and it

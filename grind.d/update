@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 use "core"
 
 SUBCOMMAND_DESC="Update machine commands"
@@ -55,7 +55,7 @@ function _call() {
 }
 
 # these are two possible locations for 
-# defitions, global definitions and this
+# definition, global definitions and this
 # machine definitions
 typeset -a def_dirs=(
   "${GRIND_DEF_DIR}/global"
@@ -73,7 +73,7 @@ case ${1} in
   ;;
   dry)
     in_cyan "Update using dry run\n"
-    use "core-dryrun"
+    use "core-dryrun" # this overrides __run
     _call _load_recur def_dirs
   ;;
   force)
@@ -82,7 +82,7 @@ case ${1} in
     warn "This is potentially dangerous\n"
 
     if read -q "confirm?Press Y/y to confirm, other key to cancel: "; then
-      use "core-force"
+      use "core-force" # this overrides __conditional_run
       _call _load_recur def_dirs
     else
       in_yellow "\nCanceled.\n"
