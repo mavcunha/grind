@@ -5,7 +5,7 @@
 SUBCOMMAND_DESC="Environment setttings"
 SUBCOMMAND_HELP=$(cat <<EOH
 
-This is a plain bash file that is loaded
+This is a plain shell file that is loaded
 before any other library and/or command.
 
 Things that are "global" can go here.
