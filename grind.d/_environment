@@ -27,6 +27,20 @@ function __osname() {
   __osx && echo "macos" || echo "linux"
 }
 
+# Find which macOS version
+function __macos_name() {
+  if __osx; then
+    local v=$(sw_vers -productVersion)
+    log "macos_version: ${v:r}"
+    case ${v:r} in
+      12) echo "monterey" ;;
+      11) echo "bigsur"   ;;
+      10) echo "catalina" ;; # assuming catalina for all v10
+      *)  warn "can't determine macOS product name" ;;
+    esac
+  fi
+}
+
 # This will open a file with open in OSX
 # or try xdg-open on Ubuntu...
 function open_file() {

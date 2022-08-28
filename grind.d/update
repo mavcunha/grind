@@ -18,6 +18,11 @@ list              List the definitions that will be executed
 force             Force execution regardless run checks results.
                   This is potentially dangerous.
 
+check             (beta) Runs the regular 'grind update run' and 
+                  try to figure out software that is installed 
+                  in the machine but were not found in definitions
+                  during update.
+
 EOH
 )
 
@@ -87,5 +92,28 @@ case ${1} in
     else
       in_yellow "\nCanceled.\n"
     fi
+  ;;
+  check)
+    in_cyan "Check for missing definitions\n"
+    use "brew"
+    use "mas"
+
+    # first we need to run the regular update
+    # routine to capture all definitions requests
+    _call _load_recur def_dirs
+
+    in_green "(beta) Listed bellow all software not found in definitions\n"
+
+    in_cyan "brew packages not found:\n"
+    in_yellow "$(brew_missing 'pkg')\n"
+
+    in_cyan "brew casks not found:\n"
+    in_yellow "$(brew_missing 'cask')\n"
+
+    in_cyan "brew taps not found:\n"
+    in_yellow "$(brew_missing 'tap')\n"
+
+    in_cyan "applications not found:\n"
+    in_yellow "$(mas_missing)\n"
   ;;
 esac

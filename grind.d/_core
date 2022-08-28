@@ -134,7 +134,6 @@ function __conditional_run() {
   fi
 }
 
-
 ### Public accessible API
 
 function do_run() {

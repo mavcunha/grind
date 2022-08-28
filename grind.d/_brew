@@ -21,8 +21,13 @@ typeset -g _BREW_PKG_INSTALLED
 typeset -g _BREW_CASK_INSTALLED
 typeset -g _BREW_TAP_INSTALLED
 
+# these keep history of what was requested
+typeset -ga _BREW_PKG_REQUESTED
+typeset -ga _BREW_CASK_REQUESTED
+typeset -ga _BREW_TAP_REQUESTED
+
 function _brew_pkg_installed() {
-  _BREW_PKG_INSTALLED="${_BREW_PKG_INSTALLED:-$(brew list)}"
+  _BREW_PKG_INSTALLED="${_BREW_PKG_INSTALLED:-$(brew list --formula)}"
   log "brew_packages_list: ${_BREW_PKG_INSTALLED}"
   grep -qE "^${1}$" <(echo "${_BREW_PKG_INSTALLED}")
 }
@@ -43,6 +48,7 @@ function brew_pkg() {
   local formula="${1}"
   local short=${formula##*/}
   log "brew_pkg: ${formula} shortname: ${short}"
+  _BREW_PKG_REQUESTED+=${short}
   do_run "brew install ${formula}"
     unless "_brew_pkg_installed '${short}'"
 }
@@ -51,6 +57,7 @@ function brew_cask() {
   local cask="${1}"
   local short=${cask##*/}
   log "brew_cask: ${cask} shortname: ${short}"
+  _BREW_CASK_REQUESTED+=${short}
   do_run "brew install --cask ${cask}"
     unless "_brew_cask_installed '${short}'"
 }
@@ -58,6 +65,38 @@ function brew_cask() {
 function brew_tap() {
   local tap="${1}"
   log "brew_tap: ${tap}"
+  _BREW_TAP_REQUESTED+=${tap}
   do_run "brew tap ${tap}"
     unless "_brew_tap_installed '${tap}'"
+}
+
+function _brew_build_deps_reference() {
+  local req_type="${1}"
+  local requests="_BREW_${(U)req_type}_REQUESTED"
+  if [[ ${#${(P)requests}} -gt 0 ]]; then
+    local brew_deps_cmd="brew deps --for-each ${(P)requests[@]}"
+    log "brew_deps_cmd: ${brew_deps_cmd}"
+    raw_deps=$( ${=brew_deps_cmd} )
+    log "raw_deps: ${raw_deps}"
+    clean_deps=$(echo ${raw_deps} | tr -d ':' | tr ' ' '\n' | awk 'NF > 0' )
+    echo ${clean_deps}
+  else
+    log "no requests found"
+  fi
+}
+
+function brew_missing() {
+  local req_type="${1}"
+  local requests="_BREW_${(U)req_type}_REQUESTED"
+  local installed="_BREW_${(U)req_type}_INSTALLED"
+
+  all_deps=$(_brew_build_deps_reference ${req_type})
+  log "all_deps: ${all_deps}"
+  for p in ${(@fP)installed}; do
+    log "check if '${p}' was requested"
+    if ! grep -q "^${p}$" <<<${all_deps}; then
+      extra+="${p}\n"
+    fi
+  done
+  echo ${extra}
 }
