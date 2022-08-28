@@ -18,10 +18,10 @@ list              List the definitions that will be executed
 force             Force execution regardless run checks results.
                   This is potentially dangerous.
 
-check             (beta) Runs the regular 'grind update run' and 
-                  try to figure out software that is installed 
-                  in the machine but were not found in definitions
-                  during update.
+check             (beta) First it runs 'grind update run' and 
+                  capture what software was requested to be installed
+                  than runs checks against what is installed in the 
+                  machine and outputs the differences.
 
 EOH
 )
