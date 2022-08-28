@@ -114,7 +114,7 @@ case ${1} in
     in_cyan "brew taps not found:\n"
     in_yellow "$(brew_missing 'tap')\n"
 
-    in_cyan "applications not found:\n"
-    in_yellow "$(mas_missing)\n"
+    #in_cyan "applications not found:\n"
+    #in_yellow "$(mas_missing)\n"
   ;;
 esac

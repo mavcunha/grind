@@ -74,7 +74,7 @@ function _brew_build_deps_reference() {
   local req_type="${1}"
   local requests="_BREW_${(U)req_type}_REQUESTED"
   if [[ ${#${(P)requests}} -gt 0 ]]; then
-    local brew_deps_cmd="brew deps --for-each ${(P)requests[@]}"
+    local brew_deps_cmd="brew deps --union --for-each ${(P)requests[@]}"
     log "brew_deps_cmd: ${brew_deps_cmd}"
     raw_deps=$( ${=brew_deps_cmd} )
     log "raw_deps: ${raw_deps}"
