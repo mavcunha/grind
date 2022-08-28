@@ -100,3 +100,26 @@ function brew_missing() {
   done
   echo ${extra}
 }
+
+function brew_cask_requested() {
+  log "brew_cask_requested()"
+
+  [[ $(whence -p jq) ]] || error "'jq' not found, please install 'jq' to use this command"
+
+  local apps=""
+  log "resolving application names"
+  for cask in ${(@f)_BREW_CASK_REQUESTED}; do
+    # we need to the app name as it is installed like MyApp.app and
+    # not the lower case version, unfortunately this is slow
+    app_name=$(brew info --json=v2 --cask ${cask} | jq -r '.. // empty | strings | select(test("\\.app$"))')
+    if [[ -z ${app_name} ]]; then
+      log "${cask} didn't resolve any app, skipping"
+      continue
+    else
+      log "${cask} => ${app_name:t}"
+      apps+="${app_name:t}\n"
+    fi
+  done
+
+  echo "${apps}"
+}

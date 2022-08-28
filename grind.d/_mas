@@ -25,19 +25,8 @@ brew_pkg 'mas'
 EOH
 )
 
-# these need to be excluded from checks
-typeset -ga _MAS_DEFAULT_APPS_MONTEREY=(
-  'App Store' Automator Books Calculator Calendar Chess
-  Contacts Dictionary FaceTime 'Find My' 'Font Book' 
-  GarageBand Home iMovie Keynote Mail Maps Messages
-  Music News Notes Numbers Pages 'Photo Booth' Photos
-  Podcasts Preview Reminders Safari Shortcuts Stickies
-  Stocks TextEdit TV VoiceMemos 'Time Machine' 'Image Capture'
-  'Launchpad' 'Mission Control' 'QuickTime Player' Siri 
-  'System Preferences' 'FindMy')
-
 typeset -g _MAS_APPS_INSTALLED
-typeset -ga _MAS_APPS_REQUESTED
+typeset -g _MAS_APPS_REQUESTED
 
 function _mas_is_installed() {
   _MAS_APPS_INSTALLED="${_MAS_APPS_INSTALLED:-$(mas list)}"
@@ -49,34 +38,8 @@ function _mas_not_available() {
   [[ $? -ne 0 ]] && true || false
 }
 
-function mas_missing() {
-  _mas_not_available && \
-    warn "'mas' not installed, can't run mas_missing()\n" && \
-    return
-
-  # default apps
-  local osname=$(__macos_name)
-  local default_apps="_MAS_DEFAULT_APPS_${(U)osname}"
-  log "loading default apps for '${osname}': ${(j/,/P)default_apps[@]}"
-
-  # list files in /Applications and /System/Applications, ignore ':' and empty lines
-  local -a apps_installed=("${(f)$(ls /Applications /System/Applications | grep -E '(.app|.localized)' | grep -vE '(:|^$)')}")
-  log "found installed: ${(j/,/)apps_installed[@]}"
-
-  # loop found apps, check if is default, requested or extra
-  log "requested apps: ${_MAS_APPS_REQUESTED[@]}"
-  for app in "${apps_installed[@]}"; do
-    if grep -q ${app:r} <<<"${(P)default_apps[@]}"; then
-      log "[default]\t${app:r}"
-    elif ! grep -q ${app:r} <<<"${_MAS_APPS_REQUESTED[@]}"; then
-      log "[extra_app]\t${app:r}"
-      extra_apps+="${app:r}\n"
-    else
-      log "[requested]\t${app:r}"
-    fi
-  done
-
-  echo ${extra_apps}
+function mas_requested() {
+  echo "${_MAS_APPS_REQUESTED}"
 }
 
 function appstore() {
@@ -90,7 +53,7 @@ function appstore() {
     warn "Ignoring: appstore '${appname}' ${appid}\n" && \
     return
 
-  _MAS_APPS_REQUESTED+="${appname}"
+  _MAS_APPS_REQUESTED+="${appname}\n"
 
   do_run "mas install ${appid}"
     unless "_mas_is_installed '${appname}'"

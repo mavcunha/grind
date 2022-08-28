@@ -28,7 +28,7 @@ function __osname() {
 }
 
 # Find which macOS version
-function __macos_name() {
+function macos_name() {
   if __osx; then
     local v=$(sw_vers -productVersion)
     log "macos_version: ${v:r}"

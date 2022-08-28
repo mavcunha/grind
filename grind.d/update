@@ -18,10 +18,11 @@ list              List the definitions that will be executed
 force             Force execution regardless run checks results.
                   This is potentially dangerous.
 
-check             (beta) First it runs 'grind update run' and 
-                  capture what software was requested to be installed
+check             First it runs 'grind update run' and capture 
+                  what software was requested to be installed
                   than runs checks against what is installed in the 
-                  machine and outputs the differences.
+                  machine and outputs the differences. This helps
+                  you identify missing definitions.
 
 EOH
 )
@@ -95,26 +96,18 @@ case ${1} in
     fi
   ;;
   check)
+    [[ -n ${GRIND_QUIET} ]] && use "core-quiet"
     in_cyan "Check for missing definitions\n"
-    use "brew"
-    use "mas"
+    use "def-check"
 
     # first we need to run the regular update
     # routine to capture all definitions requests
     _call _load_recur def_dirs
 
-    in_green "(beta) Listed bellow all software not found in definitions\n"
-
-    in_cyan "brew packages not found:\n"
+    in_green "\nListing missing software definitions\n"
+    in_yellow ">>>brew packages installed but not defined<<<\n"
     in_yellow "$(brew_missing 'pkg')\n"
-
-    in_cyan "brew casks not found:\n"
-    in_yellow "$(brew_missing 'cask')\n"
-
-    in_cyan "brew taps not found:\n"
-    in_yellow "$(brew_missing 'tap')\n"
-
-    #in_cyan "applications not found:\n"
-    #in_yellow "$(mas_missing)\n"
+    in_yellow ">>>applications installed but not defined<<<\n"
+    in_yellow "$(missing_apps)\n"
   ;;
 esac
