@@ -1,0 +1,35 @@
+# vim: ft=zsh
+SUBCOMMAND_DESC="Library for quiet mode"
+SUBCOMMAND_HELP=$(cat <<EOH
+
+Usage:
+
+This library implements the --quiet flag of grind
+it will supress common output functions for a minimal
+output. It will not suppress 'warnings' or 'errors'
+
+Functions:
+
+in_cyan             This lib will override 'in_cyan' to 
+                    produce no output
+
+__box               Calls to __box will result only the
+                    first character to be printed. S for SKIP and
+                    R for RUN 
+
+EOH
+)
+
+# suppress calls to in_cyan
+# which show the statements to run
+function in_cyan() {
+  return
+}
+
+# just output the fist letter
+# S -> for SKIP, R -> for RUN
+function __box {
+  local msg="${1}"
+  echo -n ${msg[1,6]}
+}
+

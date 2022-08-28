@@ -31,7 +31,7 @@ function warn() {
 }
 
 # accept '-d' as a debug flag
-zparseopts -D -E - d=DEBUG -debug=DEBUG
+zparseopts -D -E - d=DEBUG -debug=DEBUG q=GRIND_QUIET -quiet=GRIN_QUIET
 
 # also accept GRIND_DEBUG=true as debug
 [[ -z ${DEBUG} ]] && DEBUG=$(eval "[[ -n \${${(U)MAIN_COMMAND}_DEBUG} ]] && echo 'true' ")
@@ -59,6 +59,7 @@ function _list_commands() {
   -h|--help|help               Show this help message
   -l|--list                    List available libraries
   -V|--version                 Display current version
+  -q|--quiet                   Quiet mode, only applies to 'update run'
   -d|--debug                   Enable debug mode, setting GRIND_DEBUG env 
                                variable as the same effect
 

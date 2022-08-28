@@ -70,6 +70,7 @@ typeset -a def_dirs=(
 case ${1} in
   run)
     in_cyan "Update run\n"
+    [[ -n ${GRIND_QUIET} ]] && use "core-quiet"
     _call _load_recur def_dirs
   ;;
   list)
