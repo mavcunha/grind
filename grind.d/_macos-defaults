@@ -1,4 +1,5 @@
 # vim: ft=sh
+# ref: https://macos-defaults.com/
 SUBCOMMAND_DESC="Library handling macOS defaults configuration values"
 SUBCOMMAND_HELP=$(cat <<EOH
 Functions:
