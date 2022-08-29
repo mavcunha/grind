@@ -44,6 +44,15 @@ function _dc_default_apps() {
   echo "${(P)default_apps}"
 }
 
+function _dc_ignored_by_conf() {
+  if [[ -n ${GRIND_CHECK_IGNORE_APPS} ]]; then
+    log "loading ignored apps from configuration: ${(@j/,/)GRIND_CHECK_IGNORE_APPS}"
+    echo ${GRIND_CHECK_IGNORE_APPS}
+  else
+    return
+  fi
+}
+
 function _dc_apps_installed() {
   # list files in /Applications and /System/Applications, ignore ':' and empty lines
   local apps_installed="${(f)$(ls /Applications /System/Applications | grep -E '(.app|.localized)' | grep -vE '(:|^$)')}"
@@ -61,14 +70,14 @@ function missing_apps() {
   local -a all_requested=(${cask_apps}  ${mas_apps})
 
   # gather default apps for this macOS
-  local -a default_apps=(${(@f)$(_dc_default_apps)})
+  local -a ignore_apps=(${(@f)$(_dc_default_apps)} ${(@f)$(_dc_ignored_by_conf)})
 
   local extra_apps=""
   # loop on installed apps, check if is default, requested or extra
   for app in "${(@f)$(_dc_apps_installed)}"; do
     local app_name="${app:t:r}"
-    if grep -q ${app_name} <<<"${(@f)default_apps}"; then
-      log "[default]\t${app_name}"
+    if grep -q ${app_name} <<<"${(@f)ignore_apps}"; then
+      log "[ignored]\t${app_name}"
     elif ! grep -q ${app_name} <<<"${(@f)all_requested}"; then
       log "[extra_app]\t${app_name}"
       extra_apps+="${app_name}\n"
