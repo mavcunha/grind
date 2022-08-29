@@ -1,5 +1,4 @@
 # vim: ft=zsh
-# vim: ft=sh
 SUBCOMMAND_DESC="Library to check current installation versus definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 

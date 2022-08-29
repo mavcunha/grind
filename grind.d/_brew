@@ -113,7 +113,7 @@ function brew_cask_requested() {
     # not the lower case version, unfortunately this is slow
     app_name=$(brew info --json=v2 --cask ${cask} | jq -r '.. // empty | strings | select(test("\\.app$"))')
     if [[ -z ${app_name} ]]; then
-      log "${cask} didn't resolve any app, skipping"
+      log "'${cask}' didn't resolve to any app, skipping."
       continue
     else
       log "${cask} => ${app_name:t}"

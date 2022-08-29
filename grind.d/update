@@ -107,7 +107,7 @@ case ${1} in
     in_green "\nListing missing software definitions\n"
     in_yellow ">>>brew packages installed but not defined<<<\n"
     in_yellow "$(brew_missing 'pkg')\n"
-    in_yellow ">>>applications installed but not defined<<<\n"
+    in_yellow ">>>applications installed but not defined (please wait)<<<\n"
     in_yellow "$(missing_apps)\n"
   ;;
 esac
