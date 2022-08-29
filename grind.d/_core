@@ -77,7 +77,7 @@ function __strip_spaces() {
 function __iexec() {
   local k=$(__strip_spaces "${1}")
   log "__iexec: ${1}"
-  [[ -n ${__GRIND_EXECS[${k}]} ]] && warn "already ran: ${1}\n" && return 42
+  [[ -n ${__GRIND_EXECS[${k}]} ]] && log "already ran: ${1}, skipping\n" && return 42
   log "mark: ${1} as ran"
   __GRIND_EXECS[${k}]="${1}"
   __GRIND_CMD_LAST="${1}"
