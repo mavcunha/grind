@@ -34,6 +34,9 @@ unlink DEF [MACHINE]           Will remove a link to a definition for this machi
                                cannot be something else other than a link. Also, see the
                                'link' description.
 
+unlink-all [MACHINE]           Will remove all links to MACHINE. If MACHINE is not given
+                               it will assume GRIND_MACHINE_NAME.
+
 clone NEW_MACHINE [MACHINE     Will create a new directory if non existent for NEW_MACHINE 
                                and will link all defitions from MACHINE to NEW_MACHINE. If
                                MACHINE is given it will assume GRIND_MACHINE_NAME as the 
@@ -112,6 +115,21 @@ case ${1} in
 
     [[ -L ${target_def} ]] && rm -f ${target_def} || error "${def} not found or not a link.\n"
   ;;
+  unlink-all)
+    machine="${2:-${GRIND_MACHINE_NAME}}"
+
+    target_def="${GRIND_DEF_DIR}/machines/${machine}"
+    log "remove all links from ${target_def}"
+    [[ -d ${target_def} ]] || error "Can't find ${target_def} directory"
+
+    if read -q "confirm?Unlink all definitions from ${machine}? [y/N]: "; then
+      links_removed=$(rm -vf ${target_def}/*)
+      log "links removed from ${target_def}\n${links_removed}"
+      in_yellow "\n${#${(f)links_removed}} links removed.\n"
+    else
+      in_yellow "\nCanceled.\n"
+    fi
+  ;;
   clone)
     new_machine="${2}"
     [[ -n ${new_machine} ]] || error "Missing NEW_MACHINE as clone target.\n"
@@ -126,6 +144,6 @@ case ${1} in
     [[ -d ${source_dir} ]] || error "Cloud not find ${source_dir}"
 
     defs=$(cp -va ${source_dir}/* ${target_dir})
-    log "Links copied:\n${defs}"
+    in_yellow "${#${(f)defs}} links copied.\n"
   ;;
 esac
