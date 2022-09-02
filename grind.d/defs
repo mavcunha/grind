@@ -37,10 +37,10 @@ unlink DEF [MACHINE]           Will remove a link to a definition for this machi
 unlink-all [MACHINE]           Will remove all links to MACHINE. If MACHINE is not given
                                it will assume GRIND_MACHINE_NAME.
 
-clone NEW_MACHINE [MACHINE     Will create a new directory if non existent for NEW_MACHINE 
+clone NEW_MACHINE [MACHINE]    Will create a new directory if non existent for NEW_MACHINE 
                                and will link all defitions from MACHINE to NEW_MACHINE. If
-                               MACHINE is given it will assume GRIND_MACHINE_NAME as the 
-                               current machine.
+                               MACHINE is not given than it will assume GRIND_MACHINE_NAME 
+                               as the current machine.
 
 EOH
 )

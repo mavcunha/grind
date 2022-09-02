@@ -18,14 +18,14 @@ list              List the definitions that will be executed
 force             Force execution regardless run checks results.
                   This is potentially dangerous.
 
-check             First it runs 'grind update run' and capture 
-                  what software was requested to be installed
-                  than runs checks against what is installed in the 
-                  machine and outputs the differences. This helps
-                  you identify missing definitions. NOTE: grind
-                  can't identify transitive dependencies, such as 
-                  A depends on B which depends on C. In this case you
-                  might see the software C listed as extra but
+
+check             Runs 'grind update run' to capture what software
+                  was requested to be installed. Then checks against
+                  what is installed in the machine and outputs the
+                  differences between installed and requested. NOTE:
+                  grind can't identify transitive dependencies, such
+                  as A depends on B which depends on C. In this case
+                  you might see the software C listed as extra but
                   in reality it is not.
 
 EOH
