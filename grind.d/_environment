@@ -30,7 +30,7 @@ function __osname() {
 # Find which macOS version
 function macos_name() {
   if __osx; then
-    local v=$(sw_vers -productVersion)
+    local v=$(sw_vers -productVersion | awk -F'.' '{print $1}')
     log "macos_version: ${v:r}"
     case ${v:r} in
       12) echo "monterey" ;;
