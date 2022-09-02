@@ -4,35 +4,40 @@ SUBCOMMAND_DESC="Inspect definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
 
-list                  List all definitions, not only those
-                      which apply to this machine. To list
-                      only the defintions that apply to this
-                      machine use 'grind update list'
+list                           List all definitions, not only those
+                               which apply to this machine. To list
+                               only the defintions that apply to this
+                               machine use 'grind update list'
 
-show DEF              Show the contents of a definition, where
-                      DEF is the definition name, example: def/git
+show DEF                       Show the contents of a definition, where
+                               DEF is the definition name, example: def/git
 
-update                Will run a "git pull --ff-only" on GRIND_DEF_DIR only if
-                      GRIND_DEF_DIR != ROOT_DIR/definitions which means it
-                      only will act if your definitions directory is an
-                      external directory to grind's directory.
+update                         Will run a "git pull --ff-only" on GRIND_DEF_DIR only if
+                               GRIND_DEF_DIR != ROOT_DIR/definitions which means it
+                               only will act if your definitions directory is an
+                               external directory to grind's directory.
 
-find TERM             Will search for TERM in all definitions on GRIND_DEF_DIR.
-                      TERM can also be a regular expression.
+find TERM                      Will search for TERM in all definitions on GRIND_DEF_DIR.
+                               TERM can also be a regular expression.
 
-link DEF [MACHINE]    Will create, if not existent, a link of DEF to the current
-                      machine. Example 'grind defs link singles/test' will enable
-                      the definition 'test' to run specifically for this machine.
-                      This is to provide an 'enable/disable' mechanism for definitions.
-                      By default MACHINE is the current machine where grind is running,
-                      but it can specified if altering configurations of other machines.
-                      The current machine name can be set through GRIND_MACHINE_NAME
-                      environment variable and inspected by 'grind conf show'
+link DEF [MACHINE]             Will create, if not existent, a link of DEF to the current
+                               machine. Example 'grind defs link singles/test' will enable
+                               the definition 'test' to run specifically for this machine.
+                               This is to provide an 'enable/disable' mechanism for definitions.
+                               By default MACHINE is the current machine where grind is running,
+                               but it can specified if altering configurations of other machines.
+                               The current machine name can be set through GRIND_MACHINE_NAME
+                               environment variable and inspected by 'grind conf show'
 
-unlink DEF [MACHINE]  Will remove a link to a definition for this machine. DEF
-                      should be the name of the defintion to be 'unliked' and it
-                      cannot be something else other than a link. Also, see the
-                      'link' description.
+unlink DEF [MACHINE]           Will remove a link to a definition for this machine. DEF
+                               should be the name of the defintion to be 'unliked' and it
+                               cannot be something else other than a link. Also, see the
+                               'link' description.
+
+clone NEW_MACHINE [MACHINE     Will create a new directory if non existent for NEW_MACHINE 
+                               and will link all defitions from MACHINE to NEW_MACHINE. If
+                               MACHINE is given it will assume GRIND_MACHINE_NAME as the 
+                               current machine.
 
 EOH
 )
@@ -106,5 +111,21 @@ case ${1} in
     log "target_def: ${target_def}"
 
     [[ -L ${target_def} ]] && rm -f ${target_def} || error "${def} not found or not a link.\n"
+  ;;
+  clone)
+    new_machine="${2}"
+    [[ -n ${new_machine} ]] || error "Missing NEW_MACHINE as clone target.\n"
+    machine="${3:-${GRIND_MACHINE_NAME}}"
+
+    log "clone definitions from ${machine} to ${new_machine}"
+
+    target_dir="${GRIND_DEF_DIR}/machines/${new_machine}"
+    source_dir="${GRIND_DEF_DIR}/machines/${machine}"
+
+    [[ -d ${target_dir} ]] || $(log "creating ${target_dir} dir"; mkdir ${target_dir})
+    [[ -d ${source_dir} ]] || error "Cloud not find ${source_dir}"
+
+    defs=$(cp -va ${source_dir}/* ${target_dir})
+    log "Links copied:\n${defs}"
   ;;
 esac
