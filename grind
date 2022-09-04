@@ -117,11 +117,6 @@ function _handle_subcommand() {
 
   log "running ${SUBCOMMANDS_DIR}/${SUBCOMMAND} ${ACTION} "
   . "${SUBCOMMANDS_DIR}/${SUBCOMMAND}" ${=ACTION}
-
-  if [[ "${ACTION}" == "help" || -z "${ACTION}" ]]; then
-    log "showing '${SUBCOMMAND}' help"
-    _help
-  fi
 }
 
 function use() {
