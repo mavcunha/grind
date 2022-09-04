@@ -72,6 +72,13 @@ function safe_rm_download_dir() {
     || warn "Directory: ${dir} does not look like a grind download directory.\n"
 }
 
+function as_admin() {
+  local cmd="${1}"
+  log "as_admin request for ${cmd}"
+  in_yellow "Requiring admin privileges\n"
+  osascript -e "do shell script \"${cmd}\"  with administrator privileges "
+}
+
 # These are defaults for configuration directory and file
 # they can be overwriten using environmental variables
 GRIND_CONF_DIR=${GRIND_CONF_DIR:-"${ROOT_DIR}/conf"}
