@@ -1,7 +1,7 @@
 # vim: ft=zsh
 use "core"
 
-SUBCOMMAND_DESC="Update machine commands"
+SUBCOMMAND_DESC="Run definitions for this machine"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 

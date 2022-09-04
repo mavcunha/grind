@@ -16,7 +16,9 @@ case ${1} in
   *)
     [[ -n "${1}" ]] || error "Missing SEARCH_TERM to search for definitions.\n"
     search_term="${1}"
+    log "search_term: ${search_term}"
     in_cyan "Searching for '${search_term}' in definitions directory: ${GRIND_DEF_DIR}\n"
+    log "executing grep for ${search_term} in ${GRIND_DEF_DIR} directory"
     (cd ${GRIND_DEF_DIR}; grep -HERi --color=always "${search_term}" *)
   ;;
 esac
