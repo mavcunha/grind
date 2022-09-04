@@ -1,0 +1,54 @@
+# vim: ft=zsh
+
+SUBCOMMAND_DESC="Unlink defintions"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} DEF [TARGET_MACHINE]
+
+Will remove a link to a definition for this machine. DEF should be the name of
+the defintion to be unlinked.
+
+DEF is only the defintion's name and not its relative path. Example: if you
+link with 'grind link def/ruby' the unlink equivalent is 'grind unlink ruby' 
+
+Also, see the 'link' description. Unless TARGET_MACHINE is defined this command
+will assume is the current machine.
+
+-a|--all            Removes all links
+
+-h|--help           This message
+
+EOH
+)
+
+case ${1} in
+  noop) ;;
+  -h|--help) _help ;;
+  -a|--all)
+    machine="${2:-${GRIND_MACHINE_NAME}}"
+
+    target_def="${GRIND_DEF_DIR}/machines/${machine}"
+    log "remove all links from ${target_def}"
+    [[ -d ${target_def} ]] || error "Can't find ${target_def} directory"
+
+    if read -q "confirm?Unlink all definitions from ${machine}? [y/N]: "; then
+      links_removed=$(rm -vf ${target_def}/*)
+      log "links removed from ${target_def}\n${links_removed}"
+      in_yellow "\n${#${(f)links_removed}} links removed.\n"
+    else
+      in_yellow "\nCanceled.\n"
+    fi
+  ;;
+  *)
+    def="${1}"
+    log "init unlink def: ${def}"
+    [[ -n "${def}" ]] || error "Missing DEFINITION to unlink from this machine.\n"
+    machine="${2:-${GRIND_MACHINE_NAME}}"
+
+    in_cyan "Unlinking ${def} from ${machine}\n"
+
+    target_def="${GRIND_DEF_DIR}/machines/${machine}/${def}"
+    log "target_def: ${target_def}"
+
+    [[ -L ${target_def} ]] && rm -f ${target_def} || error "${def} not found or not a link.\n"
+  ;;
+esac

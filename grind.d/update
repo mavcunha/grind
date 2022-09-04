@@ -109,6 +109,9 @@ case ${1} in
   -h|--help)
     _help
   ;;
+  noop)
+    true
+  ;;
   *)
     in_cyan "Update run\n"
     [[ -n ${GRIND_QUIET} ]] && use "core-quiet"

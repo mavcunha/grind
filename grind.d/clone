@@ -1,0 +1,31 @@
+# vim: ft=zsh
+SUBCOMMAND_DESC="Copy definitions to another machine"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} TARGET_MACHINE [SOURCE_MACHINE]
+
+Will create a new directory if non existent for TARGET_MACHINE and will link
+all defitions from SOURCE_MACHINE to TARGET_MACHINE. If SOURCE_MACHINE is not
+given than it will assume GRIND_MACHINE_NAME as the current machine.
+
+EOH
+)
+case ${1} in
+  noop) ;;
+  -h|--help) _help ;;
+  *)
+    new_machine="${1}"
+    [[ -n ${new_machine} ]] || error "Missing NEW_MACHINE as clone target.\n"
+    machine="${2:-${GRIND_MACHINE_NAME}}"
+
+    log "clone definitions from ${machine} to ${new_machine}"
+
+    target_dir="${GRIND_DEF_DIR}/machines/${new_machine}"
+    source_dir="${GRIND_DEF_DIR}/machines/${machine}"
+
+    [[ -d ${target_dir} ]] || $(log "creating ${target_dir} dir"; mkdir ${target_dir})
+    [[ -d ${source_dir} ]] || error "Cloud not find ${source_dir}"
+
+    defs=$(cp -va ${source_dir}/* ${target_dir})
+    in_yellow "${#${(f)defs}} links copied.\n"
+  ;;
+esac

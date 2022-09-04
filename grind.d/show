@@ -1,0 +1,26 @@
+# vim: ft=zsh
+
+SUBCOMMAND_DESC="Display a definition content "
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
+
+show DEF                       Show the contents of a definition, where
+                               DEF is the definition name, example: def/git
+
+EOH
+)
+
+case ${1} in
+  noop) ;;
+  help) _help ;;
+  *)
+    [[ -z ${1} ]] && error "Missing definition parameter\n"
+    log "show contents of ${1}"
+    if [[ -f "${GRIND_DEF_DIR}/${1}" ]]; then
+      log "cating ${GRIND_DEF_DIR}/${1}"
+      cat "${GRIND_DEF_DIR}/${1}"
+    else
+      error "'${GRIND_DEF_DIR}/${1}' not found.\n"
+    fi
+  ;;
+esac

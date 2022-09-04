@@ -1,0 +1,22 @@
+# vim: ft=zsh
+
+SUBCOMMAND_DESC="Search inside all definitions"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} TERM
+
+Will search for TERM in all definitions on GRIND_DEF_DIR.
+TERM can also be a regular expression.
+
+EOH
+)
+
+case ${1} in
+  noop) ;;
+  -h|--help) _help ;;
+  *)
+    [[ -n "${1}" ]] || error "Missing SEARCH_TERM to search for definitions.\n"
+    search_term="${1}"
+    in_cyan "Searching for '${search_term}' in definitions directory: ${GRIND_DEF_DIR}\n"
+    (cd ${GRIND_DEF_DIR}; grep -HERi --color=always "${search_term}" *)
+  ;;
+esac

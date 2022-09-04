@@ -54,20 +54,21 @@ fi
 
 function _list_commands() {
   cat <<EOU
-  usage: ${MAIN_COMMAND} [-h|--help|help] [-l|--list] [-V|--version] [SUBCOMMAND]
+  Usage: ${MAIN_COMMAND} [-h|--help] [-l|--list] [-q|--quiet] [-d|--debug] [-V|--version] [SUBCOMMAND]
 
-  -h|--help|help               Show this help message
+  -h|--help                    Show this help message
   -l|--list                    List available libraries
-  -V|--version                 Display current version
   -q|--quiet                   Quiet mode, only applies to 'update run'
-  -d|--debug                   Enable debug mode, setting GRIND_DEBUG env 
+  -d|--debug                   Enable debug mode, setting GRIND_DEBUG env
                                variable as the same effect
+  -V|--version                 Display current version
 
   Subcommands available ('${MAIN_COMMAND} SUBCOMMAND' for usage):
 
 EOU
   for i in $(export LC_COLLATE=C; find ${SUBCOMMANDS_DIR} -maxdepth 1 -type f -or -type l | grep -vE '/_[^[:blank:]]+$' | sort); do
-    source "${i}"
+    log "sourcing ${i} with: noop"
+    source "${i}" "noop"
     local libname=$(basename ${i})
     printf "  %.24s %-60s\n" \
        "${libname}                                          " \
@@ -131,7 +132,7 @@ case ${_arg_subcmd} in
     log 'showing available libs'
     _list_libraries
   ;;
-  help|-h|--help|'')
+  -h|--help|'')
     log 'help or no argument was given'
     _list_commands
   ;;

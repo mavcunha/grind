@@ -1,9 +1,8 @@
 # vim: ft=zsh
-
 SUBCOMMAND_DESC="Bootstrap machine"
 SUBCOMMAND_HELP=$(cat <<EOH
 
-Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
 This command should run as a first setup for the machine. It
 will install the basic tooling necessary for grind work.
@@ -11,20 +10,27 @@ will install the basic tooling necessary for grind work.
 Bootstrap depends on OS type, there's a bootstrap for macOS and
 for Linux on definitions/bootstrap/ directory.
 
-Available ACTIONS are:
+macOS install: 
+  * XCode CLI tools 
+  * Homebrew
 
-run               On macOS will install:
-                  * XCode CLI tools
-                  * Homebrew
-
-                  On Linux will:
-                  not implemented yet.
+Linux:
+  * not implemented yet.
 
 EOH
 )
 
 case ${1} in
-  run)
-    . ${GRIND_DEF_DIR}/bootstrap/$(__osname)
+  noop) ;;
+  -h|--help) _help ;;
+  *)
+    if read -q "confirm?Run bootstrap for this machine? [y/N]: "; then
+      in_yellow "\nRunning bootstrap\n"
+      bootstrap_file=${GRIND_DEF_DIR}/bootstrap/$(__osname)
+      log "bootstrap_file: ${bootstrap_file}"
+      [[ -f ${bootstrap_file} ]] && . ${bootstrap_file} || error "${bootstrap_file} not found.\n"
+    else
+      in_yellow "\nCanceled.\n"
+    fi
   ;;
 esac

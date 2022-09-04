@@ -1,0 +1,28 @@
+# vim: ft=zsh
+
+SUBCOMMAND_DESC="List definitions"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+
+List all definitions, not only those
+which apply to this machine. To list
+only the defintions that apply to this
+machine use 'grind update list'
+
+EOH
+)
+
+case ${1} in
+  noop) ;;
+  -h|--help) _help ;;
+  *)
+    log "listing definitions from ${GRIND_DEF_DIR}"
+    for i in $(export LC_COLLATE=C; find -E ${GRIND_DEF_DIR} \
+      \( -type f -or -type l \) \
+      -not -path '*/\.*' \
+      -not -regex '.*/(machines|files|global)/.*' | sort); do
+      log "found: ${i}"
+      in_cyan ">>>${i##${GRIND_DEF_DIR}/}<<<\n";
+    done
+  ;;
+esac

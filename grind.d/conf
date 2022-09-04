@@ -1,8 +1,10 @@
 # vim: ft=zsh
 SUBCOMMAND_DESC="Grind's configuration"
 SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
-show            Show all defined configurations
+Display grind current configuration.
+
 
 EOH
 )
@@ -15,8 +17,9 @@ function display_conf() {
 }
 
 case ${1} in
-  show)
-    in_green "grind configurations:\n"
+  noop) ;;
+  -h|--help) _help ;;
+  *)
     display_conf "GRIND_CONF_DIR"
     display_conf "GRIND_CONF_FILE"
     display_conf "GRIND_DEF_DIR"

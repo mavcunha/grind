@@ -1,0 +1,48 @@
+# vim: ft=zsh
+
+SUBCOMMAND_DESC="Link a defintion to a machine"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
+
+
+Will create, if not existent, a link of DEF to the current
+machine. Example 'grind defs link singles/test' will enable
+the definition 'test' to run specifically for this machine.
+This is to provide an 'enable/disable' mechanism for definitions.
+By default MACHINE is the current machine where grind is running,
+but it can specified if altering configurations of other machines.
+The current machine name can be set through GRIND_MACHINE_NAME
+environment variable and inspected by 'grind conf show'
+
+-h|--help              Shows this message
+
+
+EOH
+)
+
+case ${1} in
+  noop) ;;
+  -h|--help) _help ;;
+  *)
+    def="${1}"
+    [[ -n "${def}" ]] || error "Missing DEFINITION to link to this machine.\n"
+    machine="${2:-${GRIND_MACHINE_NAME}}"
+
+    log "Check if definition exist: ${GRIND_DEF_DIR}/${def}"
+    [[ -e "${GRIND_DEF_DIR}/${def}" ]] || error "Definition '${def}' not found.\n"
+
+    in_cyan "Linking ${def} to ${machine}\n"
+
+    defname=${def##*/}
+    defmachine=${GRIND_DEF_DIR}/machines/${machine}
+    relative=$(perl -e 'use File::Spec; print File::Spec->abs2rel(@ARGV) . "\n"' ${GRIND_DEF_DIR} ${defmachine})
+
+    log "relative path calculated as ${relative}"
+
+    (cd ${GRIND_DEF_DIR}/machines/${machine} || \
+      error "Failed to change into machine def dir.\n"
+      log "ln -s ${relative}/${def} ${defname}"
+      ln -s ${relative}/${def} ${defname}
+    )
+  ;;
+esac

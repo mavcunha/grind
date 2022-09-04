@@ -1,31 +1,42 @@
-# vim: ft=sh
+# vim: ft=zsh
 use "core"
 
 SUBCOMMAND_DESC="Run an arbitrary definition"
 SUBCOMMAND_HELP=$(cat <<EOH
-Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} [-n|--dry] [-f|--force] DEF
 
-run [--dry|-d|--force|-f]  DEF      Relative name of a definition,
-                                    example: grind run global/utilities
-                                    If --dry or -d is given will run
+Runs a definition individually and directly, use relative name of a definition,
+example: grind run global/utilities
+
+-n|--dry                            If --dry or -n is given will run
                                     on 'dry-run' mode which will not
                                     execute 'do_run' commands.
-                                    If --force or -f is given will run
+
+-f|--force                          If --force or -f is given will run
                                     on 'force' mode which will execute
                                     regardless run check results.
 EOH
 )
 
+function __run_missing_def() {
+  error "Missing DEF parameter to run.\n"
+}
+
 case ${1} in
-  -d|--dry)
+  noop) ;;
+  -h|--help) _help ;;
+  -n|--dry)
+    [[ -z ${2} ]] && __run_missing_def
     use "core-dryrun"
     run_def "${2}"
   ;;
   -f|--force)
+    [[ -z ${2} ]] && __run_missing_def
     use "core-force"
     run_def "${2}"
   ;;
   *)
+    [[ -z ${1} ]] && error "Missing DEF parameter to run.\n"
     run_def "${1}"
   ;;
 esac
