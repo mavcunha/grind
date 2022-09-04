@@ -20,6 +20,8 @@ update                         Will run a "git pull --ff-only" on GRIND_DEF_DIR 
 find TERM                      Will search for TERM in all definitions on GRIND_DEF_DIR.
                                TERM can also be a regular expression.
 
+search TERM                    Same as 'find TERM'
+
 link DEF [MACHINE]             Will create, if not existent, a link of DEF to the current
                                machine. Example 'grind defs link singles/test' will enable
                                the definition 'test' to run specifically for this machine.
@@ -77,7 +79,7 @@ case ${1} in
       warn "Definitions directory is the same as grind's directory.\n"
     fi
   ;;
-  find)
+  find|search)
     [[ -n "${2}" ]] || error "Missing SEARCH_TERM to search for definitions.\n"
     search_term="${2}"
     in_cyan "Searching for '${search_term}' in definitions directory: ${GRIND_DEF_DIR}\n"
