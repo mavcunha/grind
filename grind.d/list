@@ -4,10 +4,8 @@ SUBCOMMAND_DESC="List definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
-List all definitions, not only those
-which apply to this machine. To list
-only the defintions that apply to this
-machine use 'grind update list'
+List all definitions, not only those which apply to this machine. To list only
+the defintions that apply to this machine use 'grind update list'
 
 EOH
 )

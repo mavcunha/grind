@@ -5,7 +5,7 @@ SUBCOMMAND_DESC="Update machine commands"
 SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
--d|--dry          Do not actually execute do_run, show
+-n|--dry          Do not actually execute do_run, show
                   definitions that would run as NOOP.
                   This should be safe as long the run checks
                   are safe.
@@ -70,11 +70,13 @@ typeset -a def_dirs=(
   "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}")
 
 case ${1} in
+  noop) ;;
+  -h|--help) _help ;;
   -l|--list)
-    in_cyan "Update listing definitions\n"
+    in_cyan "Definitions for ${GRIND_MACHINE_NAME}\n"
     _call _list_recur def_dirs
   ;;
-  -d|--dry)
+  -n|--dry)
     in_cyan "Update using dry run\n"
     use "core-dryrun" # this overrides __run
     _call _load_recur def_dirs
@@ -105,12 +107,6 @@ case ${1} in
     in_yellow "$(brew_missing 'pkg')\n"
     in_yellow ">>>applications installed but not defined (please wait)<<<\n"
     in_yellow "$(missing_apps)\n"
-  ;;
-  -h|--help)
-    _help
-  ;;
-  noop)
-    true
   ;;
   *)
     in_cyan "Update run\n"

@@ -100,7 +100,7 @@ function _subcommand_help() {
   local subhelp=${2}
   cat <<EOU
 
-  Showing '${MAIN_COMMAND} ${subcmd}' available actions:
+  Showing '${MAIN_COMMAND} ${subcmd}' help:
 
   ${subhelp}
 
