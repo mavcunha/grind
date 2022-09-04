@@ -60,6 +60,9 @@ function _call() {
     log "_call ${func} on ${d}"
     ${func} ${d}
   done
+
+  # last line break in case of quiet mode
+  [[ -n ${GRIND_QUIET} ]] && echo
 }
 
 # these are two possible locations for 
@@ -107,6 +110,7 @@ case ${1} in
     in_yellow "$(brew_missing 'pkg')\n"
     in_yellow ">>>applications installed but not defined (please wait)<<<\n"
     in_yellow "$(missing_apps)\n"
+
   ;;
   *)
     in_cyan "Update run\n"
