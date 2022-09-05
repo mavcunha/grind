@@ -34,7 +34,8 @@ function warn() {
 zparseopts -D -E - d=DEBUG -debug=DEBUG q=GRIND_QUIET -quiet=GRIN_QUIET
 
 # also accept GRIND_DEBUG=true as debug
-[[ -z ${DEBUG} ]] && DEBUG=$(eval "[[ -n \${${(U)MAIN_COMMAND}_DEBUG} ]] && echo 'true' ")
+_DEBUG_ENV="${(U)MAIN_COMMAND}_DEBUG"
+[[ -z ${DEBUG} ]] && DEBUG=${(P)_DEBUG_ENV}
 
 # grind should not run as root it is too dangerous.
 # Privileged should be asked in a definition to
