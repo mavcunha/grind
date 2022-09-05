@@ -19,9 +19,10 @@ EOH
 # aware users of dry-run mode
 [[ -z ${*} ]] || in_yellow "dry-run mode enabled\n"
 
-function __run() {
-  log "__run (noop): ${__GRIND_CMD_NEXT}"
-  __magenta_box "NOOP"
+function __conditional_run() {
+  local cmd="${1}"
+  log "__conditional_run (dry-run): ${cmd}"
+  __magenta_box 'NOOP'
 }
 
 # allow access to help by 'grind _lib --help'
