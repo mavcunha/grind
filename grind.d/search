@@ -12,7 +12,7 @@ EOH
 
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   *)
     [[ -n "${1}" ]] || error "Missing SEARCH_TERM to search for definitions.\n"
     search_term="${1}"

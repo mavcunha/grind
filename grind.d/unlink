@@ -22,7 +22,7 @@ EOH
 
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   -a|--all)
     machine="${2:-${GRIND_MACHINE_NAME}}"
 

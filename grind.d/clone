@@ -11,7 +11,7 @@ EOH
 )
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   *)
     new_machine="${1}"
     [[ -n ${new_machine} ]] || error "Missing NEW_MACHINE as clone target.\n"

@@ -59,8 +59,7 @@ function _list_commands() {
   -h|--help                Show this help message
   -l|--list                List available libraries
   -q|--quiet               Quiet mode, only applies to 'update run'
-  -d|--debug               Enable debug mode, setting GRIND_DEBUG env
-                           variable as the same effect
+  -d|--debug               Enable debug mode, same as setting GRIND_DEBUG
   -V|--version             Display current version
 
   Subcommands available ('${MAIN_COMMAND} SUBCOMMAND' for usage):
@@ -108,7 +107,7 @@ EOU
   exit 1
 }
 
-function _help() {
+function help() {
   _subcommand_help ${SUBCOMMAND} "${SUBCOMMAND_HELP}"
 }
 

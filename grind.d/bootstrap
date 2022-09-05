@@ -22,7 +22,7 @@ EOH
 
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   *)
     if read -q "confirm?Run bootstrap for this machine? [y/N]: "; then
       in_yellow "\nRunning bootstrap\n"

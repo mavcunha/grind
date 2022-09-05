@@ -18,7 +18,7 @@ function display_conf() {
 
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   *)
     display_conf "GRIND_CONF_DIR"
     display_conf "GRIND_CONF_FILE"

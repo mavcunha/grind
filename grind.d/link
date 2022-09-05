@@ -20,7 +20,7 @@ EOH
 
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   *)
     def="${1}"
     [[ -n "${def}" ]] || error "Missing DEFINITION to link to this machine.\n"

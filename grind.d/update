@@ -74,7 +74,7 @@ typeset -a def_dirs=(
 
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   -l|--list)
     in_cyan "Definitions for ${GRIND_MACHINE_NAME}\n"
     _call _list_recur def_dirs

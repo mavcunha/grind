@@ -24,7 +24,7 @@ function __run_missing_def() {
 
 case ${1} in
   noop) ;;
-  -h|--help) _help ;;
+  -h|--help) help ;;
   -n|--dry)
     [[ -z ${2} ]] && __run_missing_def
     use "core-dryrun"

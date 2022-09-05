@@ -12,7 +12,7 @@ EOH
 
 case ${1} in
   noop) ;;
-  help) _help ;;
+  help) help ;;
   *)
     [[ -z ${1} ]] && error "Missing definition parameter\n"
     log "show contents of ${1}"
