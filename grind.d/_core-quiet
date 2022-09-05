@@ -14,8 +14,8 @@ in_cyan             This lib will override 'in_cyan' to
                     produce no output
 
 __box               Calls to __box will result only the
-                    first character to be printed. S for SKIP and
-                    R for RUN 
+                    first character to be printed. S for SKIP,
+                    R for RUN and N for NOOP.
 
 EOH
 )
