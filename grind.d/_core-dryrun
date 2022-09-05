@@ -19,10 +19,21 @@ EOH
 # aware users of dry-run mode
 [[ -z ${*} ]] || in_yellow "dry-run mode enabled\n"
 
-function __conditional_run() {
+function __run() {
   local cmd="${1}"
-  log "__conditional_run (dry-run): ${cmd}"
-  __magenta_box 'NOOP'
+  log "__run (dry-run): ${cmd}"
+}
+
+# this is a hack, as part of __conditional_run, __yellow_box will be called
+# with 'RUN' and we just override __run to a noop. 
+# But the call to __yellow_box still happens which leads 
+# to output like [RUN][NOOP]
+# So what we do is to override __yellow_box for a __magenta_box 'NOOP'
+# any calls to __yellow_box at this mode will lead to a NOOP message.
+# the assumption here is that __yellow_box is only called for 'RUN'
+# messages and nothing else otherwise will confuse the user.
+function __yellow_box() { 
+  __magenta_box 'NOOP' 
 }
 
 # allow access to help by 'grind _lib --help'
