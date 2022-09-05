@@ -1,4 +1,7 @@
 # vim: ft=zsh
+use "brew"
+use "mas"
+
 SUBCOMMAND_DESC="Library to check current installation versus definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 
@@ -21,8 +24,6 @@ missing_apps                   Returns this list of apps which are not present
 
 EOH
 )
-use "brew"
-use "mas"
 
 # these need to be excluded from checks
 typeset -ga _MAS_DEFAULT_APPS_MONTEREY=(
