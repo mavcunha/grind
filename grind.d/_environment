@@ -83,7 +83,7 @@ function safe_rm_download_dir() {
 function as_admin() {
   local cmd="${1}"
   log "as_admin request for ${cmd}"
-  in_yellow "Requiring admin privileges\n"
+  in_yellow "Requiring admin privileges to run '${cmd}'\n"
   osascript -e "do shell script \"${cmd}\"  with administrator privileges "
 }
 
