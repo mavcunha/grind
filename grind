@@ -56,12 +56,12 @@ function _list_commands() {
   cat <<EOU
   Usage: ${MAIN_COMMAND} [-h|--help] [-l|--list] [-q|--quiet] [-d|--debug] [-V|--version] [SUBCOMMAND]
 
-  -h|--help                    Show this help message
-  -l|--list                    List available libraries
-  -q|--quiet                   Quiet mode, only applies to 'update run'
-  -d|--debug                   Enable debug mode, setting GRIND_DEBUG env
-                               variable as the same effect
-  -V|--version                 Display current version
+  -h|--help                Show this help message
+  -l|--list                List available libraries
+  -q|--quiet               Quiet mode, only applies to 'update run'
+  -d|--debug               Enable debug mode, setting GRIND_DEBUG env
+                           variable as the same effect
+  -V|--version             Display current version
 
   Subcommands available ('${MAIN_COMMAND} SUBCOMMAND' for usage):
 
@@ -70,7 +70,7 @@ EOU
     log "sourcing ${i} with: noop"
     source "${i}" "noop"
     local libname=$(basename ${i})
-    printf "  %.24s %-60s\n" \
+    printf "  %.24s %-50s\n" \
        "${libname}                                          " \
        "${SUBCOMMAND_DESC}"
   done
