@@ -127,3 +127,6 @@ function machine_definitions() {
 
   echo "${defs_found}"
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

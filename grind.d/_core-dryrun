@@ -23,3 +23,6 @@ function __run() {
   log "__run (noop): ${__GRIND_CMD_NEXT}"
   __magenta_box "NOOP"
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

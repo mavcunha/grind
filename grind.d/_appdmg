@@ -76,3 +76,6 @@ function appdmg() {
   appdmg_custom "${uri}"
     unless_dir "/Applications/${appname}.app"
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

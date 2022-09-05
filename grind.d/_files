@@ -15,11 +15,11 @@ file ORIG DEST                       Will copy the file from GRIND_DEF_DIR/files
 file_force ORIG DEST                 Will copy the file from GRIND_DEF_DIR/files/ORIG to
                                      DEST even if it already exists.
 
-link ORIG DEST                       Will create a soft link from ORIG to DEST if DEST
-                                     doesn't exist.
+link ORIG DEST                       Will create a soft link from GRIND_DEF_DIR/files/ORIG 
+                                     to DEST if DEST doesn't exist.
 
-link_force ORIG DEST                 Will create a soft link from ORIG to DEST regardless
-                                     if DEST already is a link or a file.
+link_force ORIG DEST                 Will create a soft link from GRIND_DEF_DIR/files/ORIG to 
+                                     DEST regardless if DEST already is a link or a file.
 
 file_replace TARGET ASSOC_ARRAY      Will use ASSOC_ARRAY to replace tokens found in TARGET.
                                      Example:
@@ -141,3 +141,6 @@ function dir_force() {
   _dir_exists "${dest}"
   run "cp -vrf '${__FILES_DEF_DIR}/${orig}/' '${dest}/' "
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

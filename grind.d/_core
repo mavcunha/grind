@@ -211,3 +211,6 @@ function run_def() {
     error "${def} definition not found.\n"
   fi
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

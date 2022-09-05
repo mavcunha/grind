@@ -41,3 +41,6 @@ function downloaded_deb_install() {
 
   dkpg_install ${package_name} ${download_path}
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

@@ -58,3 +58,6 @@ function appstore() {
   do_run "mas install ${appid}"
     unless "_mas_is_installed '${appname}'"
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

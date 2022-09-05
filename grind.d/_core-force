@@ -26,3 +26,6 @@ function __conditional_run() {
   log "log ignoring run check, forced execution!"
   __run "$(__red_box 'FORCE')"
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac

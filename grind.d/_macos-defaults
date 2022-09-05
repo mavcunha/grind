@@ -21,3 +21,6 @@ function defaults() {
   do_run "${_DEFAULTS_CMD} write \"${domain}\" \"${key}\" \"${value}\""
     unless "${_DEFAULTS_CMD} read \"${domain}\" \"${key}\" | grep -q \"${value}\""
 }
+
+# allow access to help by 'grind _lib --help'
+case ${1} in -h|--help) help;; esac
