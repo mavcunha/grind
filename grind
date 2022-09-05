@@ -120,11 +120,6 @@ function _handle_subcommand() {
   . "${SUBCOMMANDS_DIR}/${SUBCOMMAND}" ${=ACTION}
 }
 
-function use() {
-  log "requiring: ${1}"
-  . ${SUBCOMMANDS_DIR}/_${1}
-}
-
 _arg_subcmd=${1}
 log "got argument '${_arg_subcmd}'"
 case ${_arg_subcmd} in
