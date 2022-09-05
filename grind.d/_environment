@@ -99,3 +99,31 @@ GRIND_MACHINE_NAME=${GRIND_MACHINE_NAME:-$(hostname -s)}
 # load user configurations
 log "user configurations from: ${GRIND_CONF_FILE}"
 [[ -f ${GRIND_CONF_FILE} ]] && . ${GRIND_CONF_FILE}
+
+# These are the defintions which will run for this machine
+typeset -a GRIND_MACHINE_DEF_DIRS=(
+  "${GRIND_DEF_DIR}/global"
+  "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}")
+
+# lists the definitions which apply to this
+# machine
+function machine_definitions() {
+  local -a defs_found=()
+
+  for def_dir in ${GRIND_MACHINE_DEF_DIRS[@]}; do
+    log "entering ${def_dir}"
+    if [[ ! -d ${def_dir} ]]; then
+      # log the absence of dir and continue
+      log "${def_dir} not found, skipping."
+    else
+      for i in $(export LC_COLLATE=C; find -L ${def_dir} -not -path "*/\.*" -type f -or -type l | sort); do
+        log "found: ${i}"
+        local defname=${i##${GRIND_DEF_DIR}/}
+        log "defname: ${defname}"
+        defs_found+=${defname}
+      done
+    fi
+  done
+
+  echo "${defs_found}"
+}

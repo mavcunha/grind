@@ -1,29 +1,21 @@
 # vim: ft=zsh
-use "brew"
-use "mas"
+use "core"
 
-SUBCOMMAND_DESC="Library to check current installation versus definitions"
+SUBCOMMAND_DESC="Check current installation versus definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
 
-Usage:
+Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 
-This is an internal library used by 'update' command to list
-possible missed definitions.
+Runs 'grind update run' to capture what software was requested to be installed.
+Then checks against what is installed in the machine and outputs the
+differences between installed and requested. NOTE: grind can't identify
+transitive dependencies, such as A depends on B which depends on C. In this
+case you might see the software C listed as extra but in reality it is not.
 
-Functions:
-
-_dc_default_apps               Determine the list of default applications
-                               in this macOS installation.
-
-_dc_apps_installed             Returns a list of all applications installed
-                               on this machine.
-
-missing_apps                   Returns this list of apps which are not present
-                               in defintions nor are default applications of this
-                               OS.
 
 EOH
 )
+
 
 # these need to be excluded from checks
 typeset -ga _MAS_DEFAULT_APPS_MONTEREY=(
@@ -89,3 +81,33 @@ function missing_apps() {
 
   echo "${extra_apps}"
 }
+
+function _check_run_update() {
+  for d in $(machine_definitions); do
+    log "about to run ${d}"
+    run_def ${d}
+  done
+}
+
+case ${1} in
+  noop) ;;
+  -h|--help) help ;;
+  *)
+    [[ -n ${GRIND_QUIET} ]] && use "core-quiet"
+
+    use "brew"; use "mas"; # we will need functions from these
+
+    # first we need to run the regular update
+    # routine to capture all requests
+    _check_run_update
+
+    in_cyan "Check for missing definitions\n"
+    in_green "\nListing missing software definitions\n"
+
+    in_yellow ">>>brew packages installed but not defined<<<\n"
+    in_yellow "$(brew_missing 'pkg')\n"
+
+    in_yellow ">>>applications installed but not defined (please wait)<<<\n"
+    in_yellow "$(missing_apps)\n"
+  ;;
+esac

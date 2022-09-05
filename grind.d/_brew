@@ -110,7 +110,8 @@ function brew_cask_requested() {
   log "resolving application names"
   for cask in ${(@f)_BREW_CASK_REQUESTED}; do
     # we need to the app name as it is installed like MyApp.app and
-    # not the lower case version, unfortunately this is slow
+    # not the lower case version, unfortunately this is super slow
+    # to run
     app_name=$(brew info --json=v2 --cask ${cask} | jq -r '.. // empty | strings | select(test("\\.app$"))')
     if [[ -z ${app_name} ]]; then
       log "'${cask}' didn't resolve to any app, skipping."

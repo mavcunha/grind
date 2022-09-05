@@ -16,73 +16,33 @@ Usage ${MAIN_COMMAND} ${SUBCOMMAND}
 -f|--force        Force execution regardless run checks results.
                   This is potentially dangerous.
 
-
--c|--check        Runs 'grind update run' to capture what software
-                  was requested to be installed. Then checks against
-                  what is installed in the machine and outputs the
-                  differences between installed and requested. NOTE:
-                  grind can't identify transitive dependencies, such
-                  as A depends on B which depends on C. In this case
-                  you might see the software C listed as extra but
-                  in reality it is not.
-
 EOH
 )
 
-function _recur() {
-  local dir="${1}"
-  local cmd="${2}"
-  log "_recur: ${dir} cmd: ${cmd}"
-  if [[ -d ${dir} ]]; then
-    for i in $(export LC_COLLATE=C; find -L ${dir} -not -path "*/\.*" -type f -or -type l | sort); do
-      log "found: ${i}"
-      local defname=${i##${GRIND_DEF_DIR}/}
-      log "defname: ${defname}"
-      [[ ${cmd} == "run" ]] && run_def "${defname}" || in_cyan ">>>${defname}<<<\n";
-    done
-  fi
-}
-
-function _load_recur() {
-  log "invoke _recur dir: ${1} cmd: run"
-  _recur "${1}" "run";
-}
-
-function _list_recur() {
-  log "invoke _recur dir: ${1} cmd: list"
-  _recur "${1}" "list";
-}
-
-function _call() {
-  local func="${1}"
-  local ddirs=(${(P)2})
-  for d in ${ddirs[@]}; do
-    log "_call ${func} on ${d}"
-    ${func} ${d}
+function _update_recur() {
+  local cmd="${1?Missing cmd on _update_recur call}"
+  for d in $(machine_definitions); do
+    log "about to ${cmd} ${d}"
+    [[ ${cmd} == "run" ]] && run_def "${d}" || in_cyan ">>>${d}<<<\n";
   done
-
-  # last line break in case of quiet mode
   [[ -n ${GRIND_QUIET} ]] && echo
 }
 
-# these are two possible locations for 
-# definition, global definitions and this
-# machine definitions
-typeset -a def_dirs=(
-  "${GRIND_DEF_DIR}/global"
-  "${GRIND_DEF_DIR}/machines/${GRIND_MACHINE_NAME}")
+# quiet suppress in_cyan and outputs
+# only the first letter of block() call
+[[ -n ${GRIND_QUIET} ]] && use "core-quiet"
 
 case ${1} in
   noop) ;;
   -h|--help) help ;;
   -l|--list)
     in_cyan "Definitions for ${GRIND_MACHINE_NAME}\n"
-    _call _list_recur def_dirs
+    _update_recur "list"
   ;;
   -n|--dry)
     in_cyan "Update using dry run\n"
     use "core-dryrun" # this overrides __run
-    _call _load_recur def_dirs
+    _update_recur "run"
   ;;
   -f|--force)
     in_cyan "Update using force\n"
@@ -91,30 +51,13 @@ case ${1} in
 
     if read -q "confirm?Press Y/y to confirm, other key to cancel: "; then
       use "core-force" # this overrides __conditional_run
-      _call _load_recur def_dirs
+      _update_recur "run"
     else
       in_yellow "\nCanceled.\n"
     fi
   ;;
-  -c|--check)
-    [[ -n ${GRIND_QUIET} ]] && use "core-quiet"
-    in_cyan "Check for missing definitions\n"
-    use "def-check"
-
-    # first we need to run the regular update
-    # routine to capture all definitions requests
-    _call _load_recur def_dirs
-
-    in_green "\nListing missing software definitions\n"
-    in_yellow ">>>brew packages installed but not defined<<<\n"
-    in_yellow "$(brew_missing 'pkg')\n"
-    in_yellow ">>>applications installed but not defined (please wait)<<<\n"
-    in_yellow "$(missing_apps)\n"
-
-  ;;
   *)
     in_cyan "Update run\n"
-    [[ -n ${GRIND_QUIET} ]] && use "core-quiet"
-    _call _load_recur def_dirs
+    _update_recur "run"
   ;;
 esac
