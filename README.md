@@ -45,34 +45,6 @@ use "brew"
 brew_pkg "git"
 ```
 
-### A more complex definition
-
-This definition will install `vim` thorugh *homebrew* if is not already installed, and
-configure some plugins and settings for `vim`.
-
-```zsh
-use "files"
-
-local __ZSHRC="${HOME}/.zshrc"
-
-function is_file_managed() {
-  [[ -f ${__ZSHRC} ]] && grep -q "grind:managed" "${__ZSHRC}" || true
-}
-
-do_run "mv ${__ZSHRC} ${__ZSHRC}.bak.$$"
-  unless "is_file_managed"
-
-file "shell/zshrc" "${__ZSHRC}"
-
-# ensure grind variables are defined in zshrc
-# so you do not have to export them manually
-typeset -A tokens=(
-  [__GRIND_DEF_DIR]="${GRIND_DEF_DIR}"
-  [__GRIND_CONF_DIR]="${GRIND_DEF_DIR}"
-)
-file_replace "${__ZSHRC}" tokens
-```
-
 ### Definitions directory organization
 
 First `grind` will load and execute whatever is in the `global` directory,
