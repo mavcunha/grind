@@ -37,10 +37,10 @@ zparseopts -D -E - d=DEBUG -debug=DEBUG q=GRIND_QUIET -quiet=GRIN_QUIET
 _DEBUG_ENV="${(U)MAIN_COMMAND}_DEBUG"
 [[ -z ${DEBUG} ]] && DEBUG=${(P)_DEBUG_ENV}
 
-# grind should not run as root it is too dangerous.
+# this should not run as root it is too dangerous.
 # Privileged should be asked in a definition to
 # control the scope of priviledged run.
-[[ "${EUID}" -eq 0 ]] && error "Running grind as root is not supported.\n"
+[[ "${EUID}" -eq 0 ]] && error "Running ${MAIN_COMMAND} as root is not supported.\n"
 
 # add itself to PATH if needed
 log "check if ${MAIN_COMMAND} is on PATH"
@@ -50,7 +50,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # environment, this is a point of extension and configuration
-# it should give some ability to extend grind behavior
+# it should give some ability to extend behavior
 [[ -f ${SUBCOMMANDS_DIR}/_environment ]] && . ${SUBCOMMANDS_DIR}/_environment
 
 function _list_commands() {
