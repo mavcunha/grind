@@ -57,10 +57,12 @@ function missing_apps() {
   # gather applications requested by brew cask and mas
   local -a cask_apps=("${(@f)$(brew_cask_requested)}")
   local -a mas_apps=("${(@f)$(mas_requested)}")
+  local -a appdmg_apps=("${(@f)$(appdmg_requested)}")
   log "caks_apps: ${(j/,/)cask_apps}"
   log "mas_apps: ${(j/,/)mas_apps}"
+  log "appdmg_apps: ${(j/,/)appdmg_apps}"
 
-  local -a all_requested=(${cask_apps}  ${mas_apps})
+  local -a all_requested=(${cask_apps}  ${mas_apps} ${appdmg_apps})
 
   # gather default apps for this macOS
   local -a ignore_apps=(${(@f)$(_dc_default_apps)} ${(@f)$(_dc_ignored_by_conf)})
@@ -95,7 +97,7 @@ case ${1} in
   *)
     [[ -n ${GRIND_QUIET} ]] && use "core-quiet"
 
-    use "brew"; use "mas"; # we will need functions from these
+    use "brew"; use "mas"; use "appdmg"; # we will need functions from these
 
     # first we need to run the regular update
     # routine to capture all requests

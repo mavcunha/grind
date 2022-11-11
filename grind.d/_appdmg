@@ -1,4 +1,4 @@
-# vim: ft=sh
+# vim: ft=zsh
 SUBCOMMAND_DESC="Library for appdmg app installation from a URI"
 SUBCOMMAND_HELP=$(cat <<EOH
 Functions:
@@ -13,6 +13,8 @@ EOH
 
 DITTO_BIN='/usr/bin/ditto'
 HDIUTIL_BIN='/usr/bin/hdiutil'
+
+typeset -g _APPDMG_REQUESTED
 
 function _appdmg_mount() {
   local file="${1}"
@@ -73,8 +75,15 @@ function appdmg_custom() {
 function appdmg() {
   local appname="${1}"
   local uri="${2}"
+
+  _APPDMG_REQUESTED+="${appname}\n"
+
   appdmg_custom "${uri}"
     unless_dir "/Applications/${appname}.app"
+}
+
+function appdmg_requested() {
+  echo "${_APPDMG_REQUESTED}"
 }
 
 # allow access to help by 'grind _lib --help'
