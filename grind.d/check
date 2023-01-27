@@ -16,7 +16,6 @@ case you might see the software C listed as extra but in reality it is not.
 EOH
 )
 
-
 # these need to be excluded from checks
 typeset -ga _MAS_DEFAULT_APPS_MONTEREY=(
   'App Store' Automator Books Calculator Calendar Chess
@@ -28,6 +27,9 @@ typeset -ga _MAS_DEFAULT_APPS_MONTEREY=(
   'Launchpad' 'Mission Control' 'QuickTime Player' Siri 
   'System Preferences' 'FindMy')
 
+typeset -ga _MAS_DEFAULT_APPS_VENTURA=(
+  ${_MAS_DEFAULT_APPS_MONTEREY}
+  Weather 'System Settings' Freeform TestFlight Clock)
 
 function _dc_default_apps() {
   # default apps

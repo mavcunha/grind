@@ -41,6 +41,7 @@ function macos_name() {
     local v=$(sw_vers -productVersion | awk -F'.' '{print $1}')
     log "macos_version: ${v:r}"
     case ${v:r} in
+      13) echo "ventura"  ;;
       12) echo "monterey" ;;
       11) echo "bigsur"   ;;
       10) echo "catalina" ;; # assuming catalina for all v10
