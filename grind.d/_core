@@ -31,7 +31,12 @@ if_ CMD             Will execute CMD, if CMD returns 0 it will
                     return true. If CMD returns != 0 it will
                     return false.
 
-stop_on_fail [MSG]  Will stop execution of grind if the the last
+if_dir ARG          Same as if_ '[[ -d ARG ]]'
+
+stop_on_fail [MSG]  Will stop execution of grind if the last
+                    executed command failed.
+
+warn_on_fail [MSG]  Will issue a warn during execution if the last
                     executed command failed.
 
 Private functions:
@@ -194,12 +199,28 @@ function if_() {
   __conditional_run "${1}"  "^0$"
 }
 
+function if_dir() {
+  log "if_dir: ${1}"
+  in_cyan "\tif_dir: ${1}\n"
+  if_ "[[ -d \"${1}\" ]]"
+}
+
 function stop_on_fail() {
   local msg="${1:-"stop_on_fail defined"}"
   log "stop_on_fail: ${1}"
   if [[ $(__last_exit_code) -ne 0 ]]; then
     in_red "STOP: ${__GRIND_CMD_LAST} exited with $(__last_exit_code)\n"
     in_red "STOP: ${msg}\n"
+    exit 1
+  fi
+}
+
+function warn_on_fail() {
+  local msg="${1:-"warn_on_fail defined"}"
+  log "warn_on_fail: ${1}"
+  if [[ $(__last_exit_code) -ne 0 ]]; then
+    in_yellow "WARN: ${__GRIND_CMD_LAST} exited with $(__last_exit_code)\n"
+    in_yellow "WARN: ${msg}\n"
     exit 1
   fi
 }
