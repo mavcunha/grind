@@ -1,0 +1,24 @@
+# vim: ft=zsh
+SUBCOMMAND_DESC="Library to ignore certain checks"
+SUBCOMMAND_HELP=$(cat <<EOH
+Functions:
+
+verify_app 'APPNAME'      It will verify if APPNAME is installed and
+                          ignore it for 'grind check'. If APPNAME is not
+                          installed it will issue a warn.
+
+EOH
+)
+
+function _missing_app() {
+  local appname="${1}"
+  in_yellow "Expected '${appname}' to be installed but it is not.\n"
+}
+
+function verify_app() {
+  local appname=${1}
+  do_run "_missing_app '${appname}'"
+    unless_dir "/Applications/${appname}.app"
+
+  GRIND_CHECK_IGNORE_APPS+=("${appname}")
+}
