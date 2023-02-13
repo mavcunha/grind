@@ -13,7 +13,10 @@ link with 'grind link def/ruby' the unlink equivalent is 'grind unlink ruby'
 Also, see the 'link' description. Unless TARGET_MACHINE is defined this command
 will assume is the current machine.
 
--a|--all            Removes all links
+-a|--all            Removes all links for TARGET_MACHINE
+
+-b|--broken         Will remove broken links that are active for
+                    TARGET_MACHINE
 
 -h|--help           This message
 
@@ -23,6 +26,19 @@ EOH
 case ${1} in
   noop) ;;
   -h|--help) help ;;
+  -b|--broken)
+    machine="${2:-${GRIND_MACHINE_NAME}}"
+    log "using machine name: ${machine}"
+
+    target_def="${GRIND_DEF_DIR}/machines/${machine}"
+    [[ -d ${target_def} ]] || error "Can't find ${target_def} directory"
+    in_cyan "Removing broken links for ${machine}\n"
+    for l in $(find -L ${target_def} -type l); do
+      log "unlinking ${l##${GRIND_DEF_DIR}/machines/}"
+      grind unlink ${l:t} ${machine}
+    done
+
+  ;;
   -a|--all)
     machine="${2:-${GRIND_MACHINE_NAME}}"
 

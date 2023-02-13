@@ -5,12 +5,13 @@ SUBCOMMAND_HELP=$(cat <<EOH
 Usage ${MAIN_COMMAND} ${SUBCOMMAND} DEF [TARGET_MACHINE]
 
 Will create, if not existent, a link of DEF to the current machine. Example
-'grind link singles/test' will enable the definition 'test' to run specifically
-for this machine.
+'grind link singles/test' will enable the definition 'test' to run
+specifically for this machine.
 
 This is to provide an 'enable/disable' mechanism for definitions. By default
 TARGET_MACHINE is the current machine. The current machine name can be set
-through GRIND_MACHINE_NAME environment variable and inspected by 'grind conf'
+through GRIND_MACHINE_NAME environment variable and inspected by 'grind
+conf'
 
 -h|--help              Shows this message
 

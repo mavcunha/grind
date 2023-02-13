@@ -8,7 +8,7 @@ explaining why I created `grind`.
 
 1. [Download](https://github.com/mavcunha/grind/releases) or clone grind.
 2. Check the `definitions` directory and write your own definition.
-3. run `./grind update run`
+3. run `./grind update`
 
 ## How to use it (long)
 
@@ -17,7 +17,7 @@ explaining why I created `grind`.
 `grind` provides a `bootstrap` command for a pre-setup for grind itself:
 
 ```zsh
-grind bootstrap run
+grind bootstrap
 ```
 
 This is a special definition and it should set and install the requirements
@@ -27,7 +27,7 @@ Tools](https://developer.apple.com/xcode/features/) and
 
 ### Update
 
-`grind update run` is the daily command from `grind`, it will execute and run all
+`grind update` is the daily command from `grind`, it will execute and run all
 definitions for current machine.
 
 ### Definitions
