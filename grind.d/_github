@@ -3,12 +3,15 @@ SUBCOMMAND_DESC="Library to interact with github"
 SUBCOMMAND_HELP=$(cat <<EOH
 Functions:
 
-github "REPO"  "DIRECTORY"        Will checkout REPO from github into
+github REPO  [DIRECTORY]          Will checkout REPO from github into
                                   DIRECTORY. REPO can be defined in two forms,
                                   abbreviated as 'user/repo' or fully qualified
                                   like 'https://github.com/user/repo.git',
                                   'git@github.com:user/repo.git' or
-                                  'ssh://git@github.com:user/repo.git'
+                                  'ssh://git@github.com:user/repo.git'. If
+                                  DIRECTORY is not defined it will assume 
+                                  GRIND_PROJ_DIR as default directory if it exists
+                                  and it is writable.
 
                                   In fact this allows you to clone from other
                                   servers not only github, although it would
@@ -40,12 +43,15 @@ function __github_resolve_repo_url() {
 }
 
 function github() {
-  [[ -z ${1} || ! ${1} =~ / ]] && error "Missing 'user/repository' argument\n"
-  [[ -d ${2} ]] || error "${2} must be a directory\n"
+  local repo=${1}
+  local directory=${2:-${GRIND_PROJ_DIR}}
 
-  repository=$(__github_resolve_repo_url ${1})
+  [[ -z ${repo} || ! ${repo} =~ / ]] && error "Missing 'user/repository' argument.\n"
+  [[ -d ${directory} && -w ${directory} ]] || error "${directory} must be a directory and writable.\n"
 
-  target_dir="${2}/${repository:t:r}"
+  repository=$(__github_resolve_repo_url ${repo})
+
+  target_dir="${directory}/${repository:t:r}"
   log "target_dir: ${target_dir}"
 
   do_run "git clone ${repository} ${target_dir}"
