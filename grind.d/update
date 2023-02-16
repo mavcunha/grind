@@ -25,12 +25,12 @@ function _update_recur() {
     log "about to ${cmd} ${d}"
     [[ ${cmd} == "run" ]] && run_def "${d}" || in_cyan ">>>${d}<<<\n";
   done
-  [[ -n ${GRIND_QUIET} ]] && echo
+  [[ -n ${GRIND_VERBOSE} ]] || echo
 }
 
 # quiet suppress in_cyan and outputs
 # only the first letter of block() call
-[[ -n ${GRIND_QUIET} ]] && use "core-quiet"
+[[ -n ${GRIND_VERBOSE} ]] || use "core-quiet"
 
 case ${1} in
   noop) ;;

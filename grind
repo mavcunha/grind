@@ -31,7 +31,7 @@ function warn() {
 }
 
 # accept '-d' as a debug flag
-zparseopts -D -E - d=DEBUG -debug=DEBUG q=GRIND_QUIET -quiet=GRIN_QUIET
+zparseopts -D -E - d=DEBUG -debug=DEBUG v=GRIND_VERBOSE -verbose=GRIND_VERBOSE
 
 # also accept GRIND_DEBUG=true as debug
 _DEBUG_ENV="${(U)MAIN_COMMAND}_DEBUG"
@@ -55,11 +55,11 @@ fi
 
 function _list_commands() {
   cat <<EOU
-  Usage: ${MAIN_COMMAND} [-h|--help] [-l|--list] [-q|--quiet] [-d|--debug] [-V|--version] [SUBCOMMAND]
+  Usage: ${MAIN_COMMAND} [-h|--help] [-l|--list] [-v|--verbose] [-d|--debug] [-V|--version] [SUBCOMMAND]
 
   -h|--help                Show this help message
   -l|--list                List available libraries
-  -q|--quiet               Quiet mode, only applies to 'update run'
+  -v|--verbose             Verbose mode. It applies to certain commands
   -d|--debug               Enable debug mode, same as setting GRIND_DEBUG
   -V|--version             Display current version
 

@@ -97,7 +97,7 @@ case ${1} in
   noop) ;;
   -h|--help) help ;;
   *)
-    [[ -n ${GRIND_QUIET} ]] && use "core-quiet"
+    [[ -n ${GRIND_VERBOSE} ]] || use "core-quiet"
 
     use "brew"; use "mas"; use "appdmg"; # we will need functions from these
 
