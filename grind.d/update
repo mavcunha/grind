@@ -28,9 +28,6 @@ function _update_recur() {
   [[ -n ${GRIND_VERBOSE} ]] || echo
 }
 
-# quiet suppress in_cyan and outputs
-# only the first letter of block() call
-[[ -n ${GRIND_VERBOSE} ]] || use "core-quiet"
 
 case ${1} in
   noop) ;;
@@ -58,6 +55,7 @@ case ${1} in
   ;;
   *)
     in_cyan "Update run\n"
+    [[ -n ${GRIND_VERBOSE} ]] || use "core-quiet"
     _update_recur "run"
   ;;
 esac
