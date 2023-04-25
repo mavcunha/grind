@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 
-readonly MAIN_COMMAND_VERSION="2.0-beta"
+readonly MAIN_COMMAND_VERSION="2.0"
 
 readonly MAIN_COMMAND=${0:t}
-readonly ROOT_DIR=${0:a:h}
+readonly ROOT_DIR=${0:A:h}
 readonly SUBCOMMANDS_DIR=${ROOT_DIR}/${MAIN_COMMAND}.d
 
 function _color()     { tput -Txterm setaf ${1}; echo -ne ${2}; tput -Txterm sgr0; }
