@@ -51,7 +51,7 @@ fi
 
 # environment, this is a point of extension and configuration
 # it should give some ability to extend behavior
-[[ -f ${SUBCOMMANDS_DIR}/_environment ]] && . ${SUBCOMMANDS_DIR}/_environment
+[[ -f ${SUBCOMMANDS_DIR}/_environment ]] && . ${SUBCOMMANDS_DIR}/_environment noop
 
 function _list_commands() {
   cat <<EOU
