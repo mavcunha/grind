@@ -22,6 +22,7 @@ case ${1} in
   *)
     display_conf "GRIND_CONF_DIR"
     display_conf "GRIND_CONF_FILE"
+    display_conf "GRIND_PROJ_DIR"
     display_conf "GRIND_DEF_DIR"
     display_conf "GRIND_MACHINE_NAME"
   ;;

@@ -47,7 +47,7 @@ function github() {
   local directory=${2:-${GRIND_PROJ_DIR}}
 
   [[ -z ${repo} || ! ${repo} =~ / ]] && error "Missing 'user/repository' argument.\n"
-  [[ -d ${directory} && -w ${directory} ]] || error "${directory} must be a directory and writable.\n"
+  [[ -d ${directory} && -w ${directory} ]] || error "'${directory}' must be a directory and writable.\n"
 
   repository=$(__github_resolve_repo_url ${repo})
 
