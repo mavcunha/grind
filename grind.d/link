@@ -19,6 +19,7 @@ conf'
 EOH
 )
 
+
 case ${1} in
   noop) ;;
   -h|--help) help ;;
@@ -33,15 +34,19 @@ case ${1} in
     in_cyan "Linking ${def} to ${machine}\n"
 
     defname=${def##*/}
+    log "defname: ${defname}"
     defmachine=${GRIND_DEF_DIR}/machines/${machine}
+    log "defmachine: ${defmachine}"
     relative=$(perl -e 'use File::Spec; print File::Spec->abs2rel(@ARGV) . "\n"' ${GRIND_DEF_DIR} ${defmachine})
-
-    log "relative path calculated as ${relative}"
+    log "relative path: ${relative}"
 
     (cd ${GRIND_DEF_DIR}/machines/${machine} || \
       error "Failed to change into machine def dir.\n"
+
       log "ln -s ${relative}/${def} ${defname}"
-      ln -s ${relative}/${def} ${defname}
+      [[ -L ${defname} ]] && \
+        log "definition '${def}' already linked to '${machine}', skip ln command" || \
+        ln -s ${relative}/${def} ${defname}
     )
   ;;
 esac
