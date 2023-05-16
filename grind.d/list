@@ -2,25 +2,40 @@
 
 SUBCOMMAND_DESC="List definitions"
 SUBCOMMAND_HELP=$(cat <<EOH
-Usage ${MAIN_COMMAND} ${SUBCOMMAND}
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} [-a|--all]
 
-List all definitions, not only those which apply to this machine. To list only
-the defintions that apply to this machine use 'grind update list'
+List definitions, by default it will list only definitions that
+apply to the current machine.
+
+-a|--all           List all definitions
 
 EOH
 )
 
+
+function _machine_defs() {
+  log "listing definitions from function 'machine_definitions'"
+  for d in $(machine_definitions); do
+    in_cyan ">>>${d}<<<\n";
+  done
+  [[ -n ${GRIND_VERBOSE} ]] || echo
+}
+
+function _all_defs() {
+  log "listing definitions from ${GRIND_DEF_DIR}"
+  for i in $(export LC_COLLATE=C; find -E ${GRIND_DEF_DIR} \
+    \( -type f -or -type l \) \
+    -not -path '*/\.*' \
+    -not -regex '.*/(machines|files|global)/.*' | sort); do
+      log "found: ${i}"
+      in_cyan ">>>${i##${GRIND_DEF_DIR}/}<<<\n";
+  done
+}
+
+
 case ${1} in
   noop) ;;
   -h|--help) help ;;
-  *)
-    log "listing definitions from ${GRIND_DEF_DIR}"
-    for i in $(export LC_COLLATE=C; find -E ${GRIND_DEF_DIR} \
-      \( -type f -or -type l \) \
-      -not -path '*/\.*' \
-      -not -regex '.*/(machines|files|global)/.*' | sort); do
-      log "found: ${i}"
-      in_cyan ">>>${i##${GRIND_DEF_DIR}/}<<<\n";
-    done
-  ;;
+  -a|--all) _all_defs ;;
+  *) _machine_defs ;;
 esac
