@@ -31,6 +31,10 @@ typeset -ga _MAS_DEFAULT_APPS_VENTURA=(
   ${_MAS_DEFAULT_APPS_MONTEREY}
   Weather 'System Settings' Freeform TestFlight Clock)
 
+typeset -ga _MAS_DEFAULT_APPS_SONOMA=(
+  ${_MAS_DEFAULT_APPS_VENTURA}
+  )
+
 function _dc_default_apps() {
   # default apps
   local osname=$(macos_name)
