@@ -160,7 +160,8 @@ function run() {
 function unless() {
   log "unless: ${1}"
   in_cyan "\tunless: ${1}\n"
-  __conditional_run "${1}"  "^[^0]$"
+  # run if command returns != 0
+  __conditional_run "${1}" "^[1-9][0-9]*$"
 }
 
 function unless_file() {
@@ -196,7 +197,7 @@ function unless_running() {
 function if_() {
   log "if_: ${1}\n"
   in_cyan "\tif_: ${1}\n"
-  __conditional_run "${1}"  "^0$"
+  __conditional_run "${1}" "^0$"
 }
 
 function if_dir() {
