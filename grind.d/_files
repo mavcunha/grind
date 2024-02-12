@@ -46,7 +46,7 @@ __FILES_DEF_DIR="${GRIND_DEF_DIR}/files"
 
 function _file_exists () {
   local file="${1}"
-  log "checking if '${file}' exists first."
+  log "checking if '${file}' exists"
   [[ -f "${file}" ]] || error "Cannot find file ${file}"
 }
 
@@ -110,6 +110,19 @@ function link() {
   _file_exists "${__FILES_DEF_DIR}/${orig}"
   do_run "ln -s '${__FILES_DEF_DIR}/${orig}' '${dest}'"
     unless_link "${dest}"
+}
+
+# Link all files from orig to dest
+function link_files() {
+  local orig="${1}"
+  local dest="${2}"
+  log "link_files: orig=${orig} dest=${dest}"
+  _dir_exists "${__FILES_DEF_DIR}/${orig}"
+  _dir_exists "${dest}"
+  for f in "${__FILES_DEF_DIR}/${orig}"/*; do
+    do_run "ln -s '${f}' '${dest}/${f:t}'"
+      unless_link "${dest}/${f:t}"
+  done
 }
 
 # Link from orig to dest regardless if dest already
