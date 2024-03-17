@@ -233,7 +233,7 @@ function run_def() {
     log "running ${GRIND_DEF_DIR}/${def}"
     . ${GRIND_DEF_DIR}/${def}
   elif [[ -n ${def} ]]; then
-    error "${def} definition not found.\n"
+    error "${GRIND_DEF_DIR}/${def} definition not found.\n"
   fi
 }
 
