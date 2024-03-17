@@ -1,0 +1,40 @@
+# vim: ft=zsh
+
+SUBCOMMAND_DESC="Edit a defition"
+SUBCOMMAND_HELP=$(cat <<EOH
+Usage ${MAIN_COMMAND} ${SUBCOMMAND} ACTION
+
+edit DEF                       Call editor on a definition
+                               DEF is the definition name, example: def/git
+
+EOH
+)
+
+function find_working_text_editor() {
+  local editors=("nvim" "vim" "vi" "nano" "emacs")
+  for e in ${editors}; do
+    log "trying editor: ${e}"
+    local path="$(whence -p ${e})"
+    if [[ -n ${path} ]]; then
+      echo -n "${path}"
+      return 0
+    fi
+  done
+  error "No suitable editor was found.\n"
+}
+
+case ${1} in
+  noop) ;;
+  help) help ;;
+  *)
+    [[ -z ${1} ]] && error "Missing definition parameter\n"
+    log "editing definition ${1}"
+    if [[ -f "${GRIND_DEF_DIR}/${1}" ]]; then
+      editor=$(find_working_text_editor)
+      log "found: ${editor}"
+      ${editor} "${GRIND_DEF_DIR}/${1}"
+    else
+      error "'${GRIND_DEF_DIR}/${1}' not found.\n"
+    fi
+  ;;
+esac
