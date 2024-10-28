@@ -206,6 +206,18 @@ function if_dir() {
   if_ "[[ -d \"${1}\" ]]"
 }
 
+function if_link() {
+  log "if_link: ${1}"
+  in_cyan "\tif_link: ${1}\n"
+  if_ "[[ -L \"${1}\" ]]"
+}
+
+function if_file() {
+  log "if_dir: ${1}"
+  in_cyan "\tif_file: ${1}\n"
+  if_ "[[ -f \"${1}\" ]]"
+}
+
 function stop_on_fail() {
   local msg="${1:-"stop_on_fail defined"}"
   log "stop_on_fail: ${1}"
